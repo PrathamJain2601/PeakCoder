@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -26,8 +20,11 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  submissions    Submission[]
   sessions       Session[]
   otps           Otp[]
+
+  @@index([createdAt]) // Index for faster user sorting
 }
 
 model Session {
@@ -37,6 +34,8 @@ model Session {
   createdAt DateTime @default(now())
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId]) // Speeds up user session lookups
 }
 
 model Otp {
@@ -45,7 +44,59 @@ model Otp {
   code      String  
   createdAt DateTime @default(now())
   expiresAt DateTime 
+  
   user      User     @relation(fields: [email], references: [email], onDelete: Cascade)
+
+  @@index([createdAt]) // Index for expiring OTPs efficiently
+}
+
+model Problem {
+  id           String   @id @default(uuid())
+  title        String
+  statement    String
+  difficulty   String
+  tags         String[] 
+  timeLimit    Float
+  memoryLimit  Int
+  createdAt    DateTime @default(now())
+
+  testcase    TestCase[]
+  submissions Submission[]
+
+  // Indexing
+  @@index([difficulty]) // Index for filtering by difficulty
+  @@index([createdAt]) // Index for sorting problems
+}
+
+model TestCase {
+  id        String  @id @default(uuid())
+  problemId String
+  input     String
+  output    String
+  isSample  Boolean
+
+  problem   Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@index([problemId]) // Fast lookup by problem
+}
+
+model Submission {
+  id            String  @id @default(uuid())
+  userId        String  
+  problemId     String
+  languageId    Int
+  sourceCode    String
+  status        String
+  executionTime Float?
+  memoryUsed    Int?
+  createdAt     DateTime @default(now())
+
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem      Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@index([userId]) // Faster submissions lookup for a user
+  @@index([problemId]) // Faster submissions lookup by problem
+  @@index([createdAt]) // Faster pagination & sorting
 }
 
 enum Role {

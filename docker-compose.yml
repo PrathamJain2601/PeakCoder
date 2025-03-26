@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    environment:
+      - NEXT_PUBLIC_API_URL=http://server:5000
+
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      - DATABASE_URL=postgresql://postgres:root@postgres:5432/PeakCoder?schema=public
+      - RABBITMQ_URL=amqp://rabbitmq
+      - PORT=5000
+      - ACCESS_TOKEN_SECRET=refresh
+      - REFRESH_TOKEN_SECRET=access
+      - VERIFICATION_TOKEN_SECRET=verification
+      - NODE_ENV=production
+      - EMAIL=nodemailerprathamjain@gmail.com
+      - PASSWORD=prfd lnaf iufv dart
+
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: PeakCoder
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+volumes:
+  postgres_data:
