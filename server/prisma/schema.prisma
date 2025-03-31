@@ -69,30 +69,32 @@ model Problem {
 }
 
 model TestCase {
-  id        String  @id @default(uuid())
-  problemId String
-  input     String
-  output    String
-  isSample  Boolean
+  id             String  @id @default(uuid())
+  problemId      String
+  inputFileUrl   String  // S3 URL for input file
+  outputFileUrl  String  // S3 URL for expected output file
+  isSample       Boolean
 
-  problem   Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problem        Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
   @@index([problemId]) // Fast lookup by problem
 }
 
 model Submission {
-  id            String  @id @default(uuid())
-  userId        String  
-  problemId     String
-  languageId    Int
-  sourceCode    String
-  status        String
-  executionTime Float?
-  memoryUsed    Int?
-  createdAt     DateTime @default(now())
+  id               String  @id @default(uuid())
+  userId           String  
+  problemId        String
+  languageId       Int
+  sourceCodeFileUrl String  // S3 URL for source code
+  status           String
+  executionTime    Float?
+  memoryUsed       Int?
+  stdoutFileUrl    String?  // Optional S3 URL for program output
+  stderrFileUrl    String?  // Optional S3 URL for error output
+  createdAt        DateTime @default(now())
 
-  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  problem      Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem         Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
   @@index([userId]) // Faster submissions lookup for a user
   @@index([problemId]) // Faster submissions lookup by problem
