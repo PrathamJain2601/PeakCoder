@@ -54,7 +54,7 @@ model Problem {
   id           String   @id @default(uuid())
   title        String
   statement    String
-  difficulty   String
+  difficulty   Difficulty
   tags         String[] 
   timeLimit    Float
   memoryLimit  Int
@@ -99,6 +99,12 @@ model Submission {
   @@index([userId]) // Faster submissions lookup for a user
   @@index([problemId]) // Faster submissions lookup by problem
   @@index([createdAt]) // Faster pagination & sorting
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
 }
 
 enum Role {
