@@ -10,9 +10,17 @@ const register = async (payload: registerPayload) => {
     try {
         const response = await axios.post(
             process.env.NEXT_PUBLIC_BACKEND_URL + links.auth.register,
-            payload
+            payload,
+            { withCredentials: true }
         );
-        return response.data;
+
+        const accessToken = response.headers['authorization']?.split(' ')[1];
+
+        return {
+            user: response.data.data,
+            accessToken
+        };
+        
     } catch (error) {
         console.log(error);
         if (axios.isAxiosError(error)) {
@@ -25,13 +33,15 @@ const register = async (payload: registerPayload) => {
     }
 };
 
-export const useRegisterMutation = () => { 
+export const useRegisterMutation = (onSuccessCallback?: () => void) => { 
     const dispatch = useDispatch();       
     return useMutation({
         mutationFn: register,
-        onSuccess: (data) => {
-            dispatch(user(data.data)); 
-            toast.success("User registred successfully");
+        onSuccess: ({ user: registeredUser, accessToken }) => {
+            dispatch(user({ user: registeredUser, isAuthenticated: false }));
+            localStorage.setItem("accessToken", accessToken);
+            if (onSuccessCallback) onSuccessCallback();
+            toast.success("User Registered in successfully");
             toast("Verification email sent to your email address",{duration: 3000,});
         },
         onError: (error) => {

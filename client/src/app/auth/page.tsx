@@ -1,14 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { registerPayload } from "@/types/user"
-import { useRegisterMutation } from "@/mutations/register"
-import { useLoginMutation } from "@/mutations/login"
+import { useRegisterMutation } from "@/mutations/registerMutation"
+import { useLoginMutation } from "@/mutations/loginMutation"
+import { useRouter } from "next/navigation"
 
 const Page = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,8 +20,20 @@ const Page = () => {
     password: ""
   });
 
-  const {mutateAsync: registerMutation, isPending: registerPending, error: registerError} = useRegisterMutation();
-  const {mutateAsync: loginMutation, isPending:loginPending, error:loginError} = useLoginMutation();
+  const {mutateAsync: registerMutation, isPending: registerPending, error: registerError} = useRegisterMutation(()=>setIsLogin(true));
+  const router = useRouter();
+  const {
+    mutateAsync: loginMutation,
+    isPending: loginPending,
+    error: loginError,
+    isSuccess: loginSuccess,
+  } = useLoginMutation();
+
+  useEffect(() => {
+    if (loginSuccess) {
+      router.push("/problemset");
+    }
+  }, [loginSuccess, router]);
 
   const handleRegister = async () => {
       await registerMutation(formData);

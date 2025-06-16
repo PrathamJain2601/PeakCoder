@@ -15,9 +15,11 @@ app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));;
 
 app.use(cors({
-    origin: ["*", "http://localhost:3000"],
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    exposedHeaders: ["Authorization"]
 }));
 
 app.get("/", (req: Request, res: Response)=>{
@@ -33,7 +35,7 @@ app.use("/otp", otp);
 import user from "./routes/user.routes.js";
 app.use("/user", isAuthorized, user);
 import problem from "./routes/problem.routes.js";
-app.use("/problem", isAuthorized, problem);
+app.use("/problems", isAuthorized, problem);
 
 app.get("/protected-route", isAuthorized, (req, res)=>{
     res.send("This is a protected route");

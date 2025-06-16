@@ -1,60 +1,124 @@
 import { useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { Problem } from "@/types/problem";
+import { LoadedTestCase } from "../description/page";
 
-export default function ProblemDescription() {
-  const [activeAccordion, setActiveAccordion] = useState<string | null>(null)
+interface ProblemDescriptionProps {
+  problem: Problem;
+  loadedTestCases: LoadedTestCase[];
+}
 
-  const toggleAccordion = (section: string) => {
-    setActiveAccordion(activeAccordion === section ? null : section)
+export default function ProblemDescription( { problem, loadedTestCases }: ProblemDescriptionProps) {
+  // console.log("Problem Description Rendered", problem);
+  const [activeTopics, setActiveTopics] = useState<string | null>(null)
+  const [activeHints, setActiveHints] = useState<string | null>(null)
+
+  console.log(problem);
+  const toggleTopics = (section: string) => {
+    setActiveTopics(activeTopics === section ? null : section)
   }
+  const toggleHints = (section: string) => {
+    setActiveHints(activeHints === section ? null : section)
+  }
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case "EASY":
+        return "text-green-400"
+      case "MEDIUM":
+        return "text-yellow-400"
+      case "HARD":
+        return "text-red-400"
+      default:
+        return "text-gray-400"
+    }
+  }
+
+  const getStatusFromSubmissions = () => {
+    if (!problem.submissions || problem.submissions.length === 0) {
+      return "Not Attempted";
+    }
+    const hasAccepted = problem.submissions.some((s) => s.verdict === "ACCEPTED");
+    return hasAccepted ? "Accepted" : "Attempted";
+  };
+
+  const status = getStatusFromSubmissions();
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Accepted":
+        return "text-green-400";
+      case "Attempted":
+        return "text-yellow-400";
+      default:
+        return "text-gray-400";
+    }
+  };
+
+  const tags = problem.tags.map(tag => tag.name); 
 
   return (
     <div className="h-full overflow-y-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Two Sum</h1>
+      <h1 className="text-2xl font-bold mb-2">{problem.title}</h1>
+      <div className="mb-2 flex justify-between">
+        <p className={`${getDifficultyColor(problem.difficulty)}`}>
+          {problem.difficulty.charAt(0) + problem.difficulty.slice(1).toLowerCase()}
+        </p>
+        <p className={`${getStatusColor(status)}`}>
+            {status.charAt(0) + status.slice(1).toLowerCase()}
+        </p>
+      </div>
       <div className="prose prose-invert">
         <p>
-          Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two
-          numbers such that they add up to <code>target</code>.
+          {problem.statement}
         </p>
-        <p>
-          You may assume that each input would have exactly one solution, and you may not use the same element twice.
-        </p>
-        <p>You can return the answer in any order.</p>
-        <h2 className="text-xl font-semibold mt-4 mb-2">Example 1:</h2>
-        <div className="bg-gray-800 p-2 rounded">
-          <p>
-            Input: nums = [2,7,11,15], target = 9
-          </p>
-          <p>
-            Output: [0,1]
-          </p>
-          <p>
-            Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
-          </p>
-        </div>  
-        <h2 className="text-xl font-semibold mt-4 mb-2">Constraints:</h2>
-        <ul className="list-disc list-inside">
-          <li>2 ≤ nums.length ≤ 10^4</li>
-          <li>-10^9 ≤ nums[i] ≤ 10^9</li>
-          <li>-10^9 ≤ target ≤ 10^9</li>
-          <li>Only one valid answer exists.</li>
-        </ul>
+        {
+          loadedTestCases.length > 0 && (
+            <div className="mt-4">
+              <h2 className="text-xl font-semibold mb-2">Sample Test Cases</h2>
+              <ul className="list-disc list-inside">
+                {loadedTestCases.map((tc, index) => (
+                  <li key={tc.id} className="mb-2">
+                    <strong>Test Case {index + 1}:</strong>
+                    <div className="mt-1">
+                      <pre className="bg-gray-800 p-2 rounded mb-1">Input:<br />{tc.input}<br />Expected Output:<br />{tc.output}</pre>
+                      {tc.explanation && (
+                        <p className="text-gray-400 mt-1">Explanation: {tc.explanation}</p>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+        {problem.constraints && 
+          <>
+            <h2 className="text-xl font-semibold mt-4 mb-2">Constraints:</h2>
+            <pre>
+              {problem.constraints}              
+            </pre>        
+          </>
+        }        
+            <pre>
+              <b>Memory Limit:</b> {problem.memoryLimit}Kb
+            </pre>
+            <pre>
+              <b>Time Limit:</b> {problem.timeLimit}s
+            </pre>
       </div>
       <div className="mt-6">
         <Accordion
           title="Topics"
-          content={["Array", "Hash Table"]}
-          isOpen={activeAccordion === "topics"}
-          onClick={() => toggleAccordion("topics")}
+          content={tags || []}
+          isOpen={activeTopics === "topics"}
+          onClick={() => toggleTopics("topics")}
         />
         <Accordion
           title="Hints"
-          content={[
-            "A really brute force way would be to search for all possible pairs of numbers but that would be too slow.",
-            "Try to use the fact that the complement of a number can be found in constant time using a hash table.",
-          ]}
-          isOpen={activeAccordion === "hints"}
-          onClick={() => toggleAccordion("hints")}
+          content={problem.hints || []}
+          isOpen={activeHints === "hints"}
+          onClick={() => toggleHints("hints")}
         />
       </div>
     </div>

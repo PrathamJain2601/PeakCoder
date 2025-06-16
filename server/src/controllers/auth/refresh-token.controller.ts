@@ -5,7 +5,7 @@ import { prisma } from "../../config/db.config";
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
     const { refreshToken } = req.cookies;
-
+    console.log("Refresh token request received", refreshToken);
     if (!refreshToken) {
         return responseCodes.clientError.unauthorized(res, "Refresh token is required");
     }

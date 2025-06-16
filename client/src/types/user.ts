@@ -18,7 +18,7 @@ export type userType = {
     id: string,
     isVerified: boolean,
     name: string,
-    password: string,
+    password?: string,
     role: string,
     updatedAt: string,
     username: string

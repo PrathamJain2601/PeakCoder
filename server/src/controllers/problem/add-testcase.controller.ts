@@ -1,66 +1,44 @@
 import { Request, Response } from "express";
-import { prisma } from "../../config/db.config";
+import { prisma } from "../../config/db.config.js";
+import { uploadTestcaseToS3 } from "../../utils/s3.util.js";
 import { responseCodes } from "../../utils/response-codes.util";
-import AWS from "aws-sdk";
-import multer from "multer";
-import { v4 as uuidv4 } from "uuid";
-import path from "path";
-
-// Configure AWS S3
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-});
-
-// Multer configuration (stores file in memory before upload)
-const upload = multer({ storage: multer.memoryStorage() }).fields([
-    { name: "inputFile", maxCount: 1 },
-    { name: "outputFile", maxCount: 1 },
-]);
 
 export const addTestCase = async (req: Request, res: Response) => {
-    upload(req, res, async (err) => {
-        if (err){
-            console.log(err);
-            return responseCodes.clientError.badRequest(res, null, "File upload error");
-        }
-        try {
-            const { problemId } = req.params;
-            const { isSample } = req.body;
-            if (!req.files || !problemId) return responseCodes.clientError.badRequest(res, null, "Missing required fields");
+  try {
+    const { problemId } = req.params;
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-            const inputFile = (req.files as any)["inputFile"]?.[0];
-            const outputFile = (req.files as any)["outputFile"]?.[0];
+    const inputFile = files?.["inputFile"]?.[0];
+    const outputFile = files?.["outputFile"]?.[0];
+    const { isSample, explanation } = req.body;
 
-            if (!inputFile || !outputFile) return responseCodes.clientError.badRequest(res, null, "Both input and output files are required");
+    if (!inputFile || !outputFile) {
+      return responseCodes.clientError.badRequest(res, null, "Both input and output files are required");
+    }
 
-            // Upload files to S3
-            const uploadFileToS3 = async (file: Express.Multer.File, type: string) => {
-                const fileKey = `testcases/${problemId}/${uuidv4()}${path.extname(file.originalname)}`;
-                const uploadParams = {
-                    Bucket: process.env.S3_BUCKET_NAME!,
-                    Key: fileKey,
-                    Body: file.buffer,
-                    ContentType: file.mimetype,
-                    ACL: "public-read",
-                };
-                const uploadResult = await s3.upload(uploadParams).promise();
-                return uploadResult.Location;
-            };
+    const problem = await prisma.problem.findUnique({ where: { id: problemId } });
+    if (!problem) {
+      return responseCodes.clientError.notFound(res, "Problem not found");
+    }
 
-            const inputFileUrl = await uploadFileToS3(inputFile, "input");
-            const outputFileUrl = await uploadFileToS3(outputFile, "output");
+    const [inputKey, outputKey] = await Promise.all([
+      uploadTestcaseToS3(inputFile.buffer, inputFile.originalname, inputFile.mimetype),
+      uploadTestcaseToS3(outputFile.buffer, outputFile.originalname, outputFile.mimetype),
+    ]);
 
-            // Store in DB
-            const testCase = await prisma.testCase.create({
-                data: { problemId, inputFileUrl, outputFileUrl, isSample: isSample === "true" },
-            });
-
-            return responseCodes.success.created(res, testCase, "Test case added successfully");
-        } catch (error) {
-            console.error("Error adding test case:", error);
-            return responseCodes.serverError.internalServerError(res);
-        }
+    const testCase = await prisma.testCase.create({
+      data: {
+        problemId,
+        inputFileUrl: inputKey, // now storing just the S3 key
+        outputFileUrl: outputKey,
+        isSample: isSample === "true",
+        explanation: explanation || null,
+      },
     });
+
+    return responseCodes.success.created(res, testCase, "Test case added successfully");
+  } catch (error) {
+    console.error(error);
+    return responseCodes.serverError.internalServerError(res, "Failed to add test case");
+  }
 };

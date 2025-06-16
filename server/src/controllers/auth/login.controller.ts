@@ -43,8 +43,10 @@ async function checkToken(token: string, userLoggedIn: string){
 export const login: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     const { emailOrUsername, password }:loginRequest = req.body;
     const { refreshToken } = req.cookies;
+    console.log("Login request received");
 
     if (!password || !emailOrUsername) {
+        console.log("All fields are required");
         return responseCodes.clientError.notFound(res, "All fields are required");
     }
     try {
@@ -57,15 +59,18 @@ export const login: RequestHandler = async (req: Request, res: Response, next: N
             },
         });
         if(!user){
+            console.log("User not found");
             return responseCodes.clientError.notFound(res, "User not found");
         }
 
         if(user.isVerified === false){
+            console.log("User is not verified");
             return responseCodes.clientError.forbidden(res, "Please verify your email first");
         }
     
         const match = await verifyPassword(password, user.password);
         if(!match){
+            console.log("Wrong email or password");
             return responseCodes.clientError.forbidden(res, "wrong email or password");
         }
 
@@ -84,7 +89,7 @@ export const login: RequestHandler = async (req: Request, res: Response, next: N
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "strict",
-                path: "/",
+                maxAge: 7 * 24 * 60 * 60 * 1000 
             });
     
         }
@@ -92,6 +97,7 @@ export const login: RequestHandler = async (req: Request, res: Response, next: N
         res.setHeader("Authorization", `Bearer ${accessToken}`);
 
         user.password = "";
+        console.log("User logged in successfully");
         return responseCodes.success.ok(res, user, "Logged in successfully");
     }
     catch(error){

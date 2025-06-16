@@ -1,39 +1,47 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Play, Send } from "lucide-react"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
+import { TestCase } from "@/types/problem"
+import { LoadedTestCase } from "../description/page"
 
 interface TestCasesProps {
   output: string
   onRun: () => void
   onSubmit: () => void
+  loadedTestCases: LoadedTestCase[]
 }
 
-export default function TestCases({ output, onRun, onSubmit }: TestCasesProps) {
-  const [activeTab, setActiveTab] = useState("testcase1")
+export default function TestCases({ output, onRun, onSubmit, loadedTestCases }: TestCasesProps) {
+  const [activeTab, setActiveTab] = useState<string>("")
 
-  const testCases = [
-    { id: "testcase1", input: "nums = [2,7,11,15], target = 9" },
-    { id: "testcase2", input: "nums = [3,2,4], target = 6" },
-    { id: "testcase3", input: "nums = [3,3], target = 6" },
-  ]
+  useEffect(() => {
+    if (loadedTestCases.length > 0) {
+      setActiveTab(loadedTestCases[0].id);
+    }
+  }, [loadedTestCases]);
 
+  const current = loadedTestCases.find((tc) => tc.id === activeTab)
   return (
     <div className="flex flex-col h-full bg-gray-800">
       <div className="flex border-b border-gray-700">
-        {testCases.map((testCase) => (
+        {loadedTestCases.map((testCase, index) => (
           <button
             key={testCase.id}
             className={`px-4 py-2 ${activeTab === testCase.id ? "bg-gray-700 text-white" : "text-gray-400"}`}
             onClick={() => setActiveTab(testCase.id)}
           >
-            {testCase.id}
+            Test {index + 1}
           </button>
         ))}
       </div>
       <div className="flex-grow overflow-y-auto p-4">
         <h3 className="text-lg font-semibold mb-2">Input:</h3>
-        <pre className="bg-gray-900 p-2 rounded mb-4">{testCases.find((tc) => tc.id === activeTab)?.input}</pre>
+        <pre className="bg-gray-900 p-2 rounded mb-4">{loadedTestCases.find((tc) => tc.id === activeTab)?.input}</pre>
+        <h3 className="text-lg font-semibold mb-2">Expected Output:</h3>
+        <pre className="bg-gray-900 p-2 rounded mb-4">{loadedTestCases.find((tc) => tc.id === activeTab)?.output}</pre>
         <h3 className="text-lg font-semibold mb-2">Output:</h3>
         <pre className="bg-gray-900 p-2 rounded">{output}</pre>
       </div>

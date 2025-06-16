@@ -14,9 +14,9 @@ model User {
   password       String
   name           String
   isVerified     Boolean  @default(false)
-  avatar         String? 
+  avatar         String?
   role           Role     @default(USER)
-  company        String? 
+  company        String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -24,7 +24,7 @@ model User {
   sessions       Session[]
   otps           Otp[]
 
-  @@index([createdAt]) // Index for faster user sorting
+  @@index([createdAt])
 }
 
 model Session {
@@ -35,70 +35,91 @@ model Session {
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId]) // Speeds up user session lookups
+  @@index([userId])
 }
 
 model Otp {
   id        String   @id @default(uuid())
   email     String   @unique
-  code      String  
+  code      String
   createdAt DateTime @default(now())
-  expiresAt DateTime 
-  
+  expiresAt DateTime
+
   user      User     @relation(fields: [email], references: [email], onDelete: Cascade)
 
-  @@index([createdAt]) // Index for expiring OTPs efficiently
+  @@index([createdAt])
 }
 
 model Problem {
   id           String   @id @default(uuid())
   title        String
+  titleSlug    String   @unique
   statement    String
+  constraints  String?   // Markdown or text
+  hints        String[] // Array of hints
   difficulty   Difficulty
-  tags         String[] 
   timeLimit    Float
   memoryLimit  Int
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  testcase    TestCase[]
-  submissions Submission[]
+  tags         Tag[]    @relation("ProblemTags") 
+  testcase     TestCase[]
+  submissions  Submission[]
 
-  // Indexing
-  @@index([difficulty]) // Index for filtering by difficulty
-  @@index([createdAt]) // Index for sorting problems
+  @@index([difficulty])
+  @@index([createdAt])
 }
+
+model Tag {
+  id       String     @id @default(uuid())
+  name     String     @unique
+  problems Problem[]  @relation("ProblemTags")
+}
+
 
 model TestCase {
   id             String  @id @default(uuid())
   problemId      String
-  inputFileUrl   String  // S3 URL for input file
-  outputFileUrl  String  // S3 URL for expected output file
+  inputFileUrl   String
+  outputFileUrl  String
+  explanation    String?
   isSample       Boolean
 
   problem        Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
-  @@index([problemId]) // Fast lookup by problem
+  @@index([problemId])
 }
 
 model Submission {
-  id               String  @id @default(uuid())
-  userId           String  
-  problemId        String
-  languageId       Int
-  sourceCodeFileUrl String  // S3 URL for source code
-  status           String
-  executionTime    Float?
-  memoryUsed       Int?
-  stdoutFileUrl    String?  // Optional S3 URL for program output
-  stderrFileUrl    String?  // Optional S3 URL for error output
-  createdAt        DateTime @default(now())
+  id                String   @id @default(uuid())
+  userId            String
+  problemId         String
+  languageId        Int
+  sourceCodeFileUrl String
+  status            Verdict
+  executionTime     Float?
+  memoryUsed        Int?
+  stdoutFileUrl     String?
+  stderrFileUrl     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  problem         Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  language          Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem           Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
-  @@index([userId]) // Faster submissions lookup for a user
-  @@index([problemId]) // Faster submissions lookup by problem
-  @@index([createdAt]) // Faster pagination & sorting
+  @@index([userId])
+  @@index([problemId])
+  @@index([createdAt])
+}
+
+model Language {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  extension String
+
+  submissions Submission[]
 }
 
 enum Difficulty {
@@ -110,4 +131,14 @@ enum Difficulty {
 enum Role {
   USER
   ADMIN
+}
+
+enum Verdict {
+  PENDING
+  ACCEPTED
+  WRONG_ANSWER
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  RUNTIME_ERROR
+  COMPILATION_ERROR
 }

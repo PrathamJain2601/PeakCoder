@@ -1,5 +1,5 @@
 import { user } from "@/store/user";
-import { loginPayload } from "@/types/user";
+import { loginPayload, userType } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -8,11 +8,21 @@ import toast from "react-hot-toast";
 
 const login = async (payload: loginPayload) => {
     try {
+        // console.log(process.env.NEXT_PUBLIC_BACKEND_URL + links.auth.login); 
         const response = await axios.post(
             process.env.NEXT_PUBLIC_BACKEND_URL + links.auth.login,
-            payload
+            payload,
+            {withCredentials: true}
         );
-        return response.data;
+
+        const accessToken = response.headers['authorization']?.split(' ')[1];
+        // console.log(response.headers, accessToken);
+
+        return {
+            user: response.data.data,
+            accessToken
+        };
+
     } catch (error) {
         console.log(error);
         if (axios.isAxiosError(error)) {
@@ -26,12 +36,14 @@ const login = async (payload: loginPayload) => {
 };
 
 export const useLoginMutation = () => { 
-    const dispatch = useDispatch();       
+    const dispatch = useDispatch();     
+    
     return useMutation({
         mutationFn: login,
-        onSuccess: (data) => {
-            dispatch(user(data.data)); 
-            toast.success("User loggedin successfully");
+        onSuccess: ({ user: loggedInUser, accessToken }) => {
+            dispatch(user({ user: loggedInUser, isAuthenticated: true }));
+            localStorage.setItem("accessToken", accessToken);
+            toast.success("User logged in successfully");
         },
         onError: (error) => {
             toast.error(error.message);

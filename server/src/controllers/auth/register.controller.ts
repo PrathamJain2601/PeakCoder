@@ -6,6 +6,7 @@ import { Prisma } from "@prisma/client";
 import { createAccessToken, createRefreshToken, createVerificationToken } from "../../utils/jwt.util";
 import { randomUUID } from "crypto";
 import { sendToQueue } from "../../utils/email.util";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
     type registerRequest = {
         name: string,
@@ -49,7 +50,7 @@ import { sendToQueue } from "../../utils/email.util";
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "strict",
-                path: "/",
+                maxAge: 7 * 24 * 60 * 60 * 1000 
             });
 
             res.setHeader("Authorization", `Bearer ${accessToken}`);
@@ -67,7 +68,7 @@ import { sendToQueue } from "../../utils/email.util";
         }
         catch (error: unknown) {
             console.log(error);
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
                     const targetField = error.meta?.target as string[];
 
