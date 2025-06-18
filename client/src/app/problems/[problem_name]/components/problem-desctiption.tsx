@@ -82,9 +82,9 @@ export default function ProblemDescription( { problem, loadedTestCases }: Proble
                     <strong>Test Case {index + 1}:</strong>
                     <div className="mt-1">
                       <pre className="bg-gray-800 p-2 rounded mb-1">Input:<br />{tc.input}<br />Expected Output:<br />{tc.output}</pre>
-                      {tc.explanation && (
-                        <p className="text-gray-400 mt-1">Explanation: {tc.explanation}</p>
-                      )}
+                      {tc.explanation && 
+                        <p className="mt-1"><b>Explanation:</b> {tc.explanation}</p>
+                      }
                     </div>
                   </li>
                 ))}

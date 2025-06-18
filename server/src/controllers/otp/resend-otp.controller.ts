@@ -1,6 +1,6 @@
 import { Request, response, Response } from "express"
 import { responseCodes } from "../../utils/response-codes.util";
-import { sendToQueue } from "../../utils/email.util";
+import { sendToEmailQueue } from "../../utils/email.util";
 import { createVerificationToken } from "../../utils/jwt.util";
 import { prisma } from "../../config/db.config";
 
@@ -19,7 +19,7 @@ export const resendOtp = async (req: Request, res: Response) => {
             return responseCodes.clientError.notFound(res, "User not found");
         }
         const code = createVerificationToken(user.email);
-        sendToQueue({
+        sendToEmailQueue({
             to: user.email,
             subject: "Welcome to Auth | Email verification Link",
             name: user.name,

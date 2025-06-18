@@ -18,7 +18,7 @@ export const getSampleTestcases = async (req: Request, res: Response) => {
 
     const testcases = await prisma.testCase.findMany({
       where: { problemId, isSample: true },
-      select: { id: true, inputFileUrl: true, outputFileUrl: true },
+      select: { id: true, inputFileUrl: true, outputFileUrl: true, explanation: true },
     });
 
     const signedTestcases = await Promise.all(
@@ -31,6 +31,7 @@ export const getSampleTestcases = async (req: Request, res: Response) => {
           id: testcase.id,
           inputFileUrl: inputUrl,
           outputFileUrl: outputUrl,
+          explanation: testcase.explanation || null,
         };
       })
     );

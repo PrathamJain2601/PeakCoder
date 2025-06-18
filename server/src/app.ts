@@ -3,12 +3,19 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {Response, Request} from "express";
 import dotenv from "dotenv";
-import { startConsumer } from './config/rabbitmq.config.js';
+import { startEmailConsumer } from './config/emailQueue.config.js';
+import { startRunConsumer } from './config/runQueue.config.js';
+import { startSubmissionConsumer } from './config/submissionQueue.config.js';
 import { isAuthorized } from './middlewares/auth.middleware.js';
+import { initializeWebSocket } from "./utils/ws.util";
+import http from "http";
+
 dotenv.config();
 
 const app = express();
-startConsumer();
+startEmailConsumer();
+startRunConsumer();
+startSubmissionConsumer();
 const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(cookieParser());
@@ -21,6 +28,10 @@ app.use(cors({
     credentials: true,
     exposedHeaders: ["Authorization"]
 }));
+
+const server = http.createServer(app); 
+
+initializeWebSocket(server);
 
 app.get("/", (req: Request, res: Response)=>{
     res.send("server is running");
@@ -36,6 +47,8 @@ import user from "./routes/user.routes.js";
 app.use("/user", isAuthorized, user);
 import problem from "./routes/problem.routes.js";
 app.use("/problems", isAuthorized, problem);
+import submission from "./routes/submission.routes.js";
+app.use("/submissions", isAuthorized, submission);
 
 app.get("/protected-route", isAuthorized, (req, res)=>{
     res.send("This is a protected route");

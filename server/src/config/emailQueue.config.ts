@@ -19,7 +19,7 @@ const sendEmail = async (emailData: emailData) => {
     console.log(`Email sent to ${emailData.to}`);
 };
 
-export const startConsumer = async () => {
+export const startEmailConsumer = async () => {
     try {
         if(!process.env.RABBITMQ_URL){
             throw new Error('RabbitMQ URL is not defined in env');

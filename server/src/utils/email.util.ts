@@ -9,7 +9,7 @@ export type emailData = {
     name: string
 }
 
-export const sendToQueue = async (emailData: emailData) => {
+export const sendToEmailQueue = async (emailData: emailData) => {
     try {
         if (!process.env.RABBITMQ_URL) {
             throw new Error('RabbitMQ URL is not defined in env');

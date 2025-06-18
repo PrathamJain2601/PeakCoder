@@ -31,6 +31,57 @@ export const uploadTestcaseToS3 = async (fileBuffer: Buffer, fileName: string, m
   return key; 
 };
 
+export const uploadSubmissionSourceToS3 = async (
+  code: string,
+  extension: string = "txt"
+): Promise<string> => {
+  const key = `submissions/${uuidv4()}.${extension}`;
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.AWS_BUCKET_NAME!,
+    Key: key,
+    Body: code,
+    ContentType: "text/plain",
+  });
+
+  await s3.send(command);
+
+  return key;
+};
+
+export const uploadStdoutToS3 = async (
+  stdout: string,
+): Promise<string> => {
+  const key = `submissions/stdout/${uuidv4()}.txt`;
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.AWS_BUCKET_NAME!,
+    Key: key,
+    Body: stdout,
+    ContentType: "text/plain",
+  });
+
+  await s3.send(command);
+  return key;
+};
+
+export const uploadStderrToS3 = async (
+  stderr: string,
+): Promise<string> => {
+  const key = `submissions/stderr/${uuidv4()}.txt`;
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.AWS_BUCKET_NAME!,
+    Key: key,
+    Body: stderr,
+    ContentType: "text/plain",
+  });
+
+  await s3.send(command);
+  return key;
+};
+
+
 export const getS3SignedUrl = async (key: string, expiresInSeconds = 180): Promise<string> => {
   const command = new GetObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME!,
@@ -39,3 +90,4 @@ export const getS3SignedUrl = async (key: string, expiresInSeconds = 180): Promi
 
   return await getSignedUrl(s3, command, { expiresIn: expiresInSeconds });
 };
+  

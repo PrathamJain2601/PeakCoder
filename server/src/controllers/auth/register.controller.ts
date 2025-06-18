@@ -2,10 +2,9 @@ import { Request, Response } from "express"
 import { responseCodes } from "../../utils/response-codes.util";
 import { hashPassword } from "../../utils/hash.util";
 import { prisma } from "../../config/db.config";
-import { Prisma } from "@prisma/client";
 import { createAccessToken, createRefreshToken, createVerificationToken } from "../../utils/jwt.util";
 import { randomUUID } from "crypto";
-import { sendToQueue } from "../../utils/email.util";
+import { sendToEmailQueue } from "../../utils/email.util";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
     type registerRequest = {
@@ -56,7 +55,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
             res.setHeader("Authorization", `Bearer ${accessToken}`);
 
             const code = createVerificationToken(user.email);
-            sendToQueue({
+            sendToEmailQueue({
                 to: user.email,
                 subject: "Welcome to Auth | Email verification Link",
                 name: user.name,

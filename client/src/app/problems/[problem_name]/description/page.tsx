@@ -71,6 +71,10 @@ function Page() {
     }
   }, [problem?.id]);
 
+  useEffect(()=>{
+    console.log("Loaded Test Cases:", loadedTestCases)
+  }, [loadedTestCases])
+
   if (isLoading) return <div>Loading problem...</div>
   if (error) return <div>Error: {(error as Error).message}</div>
   if (!problem) return <div>No problem found</div>
@@ -89,11 +93,11 @@ function Page() {
         direction="horizontal"
         className="rounded-lg border flex h-full bg-gray-900 text-white"
       >
-        <ResizablePanel defaultSize={25}>
+        <ResizablePanel defaultSize={35}>
           <ProblemDescription problem={problem} loadedTestCases={loadedTestCases} />
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={75}>
+        <ResizablePanel defaultSize={65}>
           <ResizablePanelGroup direction="vertical" className="h-full">
             <ResizablePanel defaultSize={65}>
               <CodeEditor
