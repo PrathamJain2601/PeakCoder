@@ -1,11 +1,12 @@
-// ✅ Corrected: consumers/submissionConsumer.ts
 import amqp from "amqplib";
 import dotenv from "dotenv";
 import { prisma } from "../config/db.config";
 import { downloadFromS3 } from "../utils/download.util";
-import { runCodeInDocker } from "../utils/docker.util";
+import { executeWithJudge0 } from "../utils/judge0.util";
 import { Verdict } from "@prisma/client";
 import { uploadStdoutToS3, uploadStderrToS3 } from "../utils/s3.util";
+import { sendSubmissionResult } from "../utils/ws.util";
+
 dotenv.config();
 
 export const startSubmissionConsumer = async () => {
@@ -19,16 +20,19 @@ export const startSubmissionConsumer = async () => {
 
     channel.consume(queue, async (msg) => {
       if (!msg) return;
+
       const data = JSON.parse(msg.content.toString());
       const { submissionId, sourceCodeFileUrl, languageId, problemId } = data;
 
       try {
-        const [testcases, language] = await Promise.all([
+        const [testcases, language, problem, submission] = await Promise.all([
           prisma.testCase.findMany({ where: { problemId } }),
           prisma.language.findUnique({ where: { id: languageId } }),
+          prisma.problem.findUnique({ where: { id: problemId } }),
+          prisma.submission.findUnique({ where: { id: submissionId } }), // get userId
         ]);
 
-        if (!language) throw new Error("Language not found");
+        if (!language || !problem || !submission) throw new Error("Missing required data");
 
         const code = await downloadFromS3(sourceCodeFileUrl);
         let verdict: Verdict = Verdict.ACCEPTED;
@@ -36,16 +40,31 @@ export const startSubmissionConsumer = async () => {
         let maxMemory = 0;
 
         for (const test of testcases) {
-          const input = await downloadFromS3(test.inputFileUrl);
-          const expectedOutput = await downloadFromS3(test.outputFileUrl);
+          const [input, expectedOutput] = await Promise.all([
+            downloadFromS3(test.inputFileUrl),
+            downloadFromS3(test.outputFileUrl),
+          ]);
 
-          const result = await runCodeInDocker({
+          const result = await executeWithJudge0(
             code,
             input,
-            languageExtension: language.extension,
-          });
+            language.judge0Id,
+            problem.timeLimit,
+            problem.memoryLimit
+          );
 
-          if (result.stdout.trim() !== expectedOutput.trim()) {
+          const actualOutput = result.stdout.trim();
+          const expected = expectedOutput.trim();
+
+          if (result.status !== "Accepted") {
+            if (result.status.includes("Time")) verdict = Verdict.TIME_LIMIT_EXCEEDED;
+            else if (result.status.includes("Memory")) verdict = Verdict.MEMORY_LIMIT_EXCEEDED;
+            else if (result.status.includes("compilation")) verdict = Verdict.COMPILATION_ERROR;
+            else verdict = Verdict.RUNTIME_ERROR;
+            break;
+          }
+
+          if (actualOutput !== expected) {
             verdict = Verdict.WRONG_ANSWER;
             break;
           }
@@ -56,7 +75,7 @@ export const startSubmissionConsumer = async () => {
 
         const [stdoutFileUrl, stderrFileUrl] = await Promise.all([
           uploadStdoutToS3("Execution finished."),
-          uploadStderrToS3("No error"),
+          uploadStderrToS3(verdict === Verdict.ACCEPTED ? "No error" : verdict),
         ]);
 
         await prisma.submission.update({
@@ -68,6 +87,14 @@ export const startSubmissionConsumer = async () => {
             stdoutFileUrl,
             stderrFileUrl,
           },
+        });
+
+        // ✅ Emit WebSocket event with verdict
+        sendSubmissionResult(submission.userId, {
+          submissionId,
+          verdict,
+          executionTime: maxTime,
+          memoryUsed: maxMemory,
         });
 
         channel.ack(msg);
@@ -82,5 +109,3 @@ export const startSubmissionConsumer = async () => {
     console.error("❌ Error in submission consumer:", error);
   }
 };
-
-

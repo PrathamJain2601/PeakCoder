@@ -45,6 +45,8 @@ export const login: RequestHandler = async (req: Request, res: Response, next: N
     const { refreshToken } = req.cookies;
     console.log("Login request received");
 
+    console.log(emailOrUsername, password);
+
     if (!password || !emailOrUsername) {
         console.log("All fields are required");
         return responseCodes.clientError.notFound(res, "All fields are required");

@@ -2,7 +2,7 @@ import amqp from "amqplib";
 import dotenv from "dotenv";
 import { prisma } from "../config/db.config";
 import { downloadFromS3 } from "../utils/download.util";
-import { runCodeInDocker } from "../utils/docker.util";
+import { executeWithJudge0 } from "../utils/judge0.util";
 import { sendRunResult } from "../utils/ws.util";
 import { Verdict } from "@prisma/client";
 
@@ -32,9 +32,9 @@ export const startRunConsumer = async () => {
           prisma.problem.findUnique({ where: { id: problemId } }),
         ]);
 
-        const timeLimit = problem?.timeLimit ?? 2;
-
-        if (!language || testcases.length === 0) throw new Error("Language/Testcases not found");
+        if (!language) throw new Error("Language not found");
+        if(!problem) throw new Error("Problem not found");
+        if(testcases.length == 0) throw new Error("Testcases not found");
 
         const results = [];
 
@@ -45,40 +45,37 @@ export const startRunConsumer = async () => {
               downloadFromS3(testcase.outputFileUrl),
             ]);
 
-            const result = await runCodeInDocker({
-              code,
-              input,
-              languageExtension: language.extension,
-              timeLimit
-            });
+            const result = await executeWithJudge0(code, input, language.judge0Id, problem.timeLimit, problem.memoryLimit); // assume you store this ID in your `Language` table
 
-            const passed = result.stdout.trim() === expectedOutput.trim();
-            console.log(result.stdout.trim());
-            console.log(expectedOutput.trim());
-            
+            let verdict: Verdict;
+
+            if (result.status === "Accepted") {
+              verdict =
+                result.stdout.trim() === expectedOutput.trim()
+                  ? Verdict.ACCEPTED
+                  : Verdict.WRONG_ANSWER;
+            } else if (result.status.includes("Time Limit")) {
+              verdict = Verdict.TIME_LIMIT_EXCEEDED;
+            } else if (result.status.includes("Compilation")) {
+              verdict = Verdict.COMPILATION_ERROR;
+            } else {
+              verdict = Verdict.RUNTIME_ERROR;
+            }
+
             results.push({
               testcaseId: testcase.id,
-              verdict: passed ? Verdict.ACCEPTED : Verdict.WRONG_ANSWER,
+              verdict,
               stdout: result.stdout,
               stderr: result.stderr,
               time: result.time,
               memory: result.memory,
             });
           } catch (err: any) {
-            // Handle specific execution failure
-            let verdict: Verdict = Verdict.RUNTIME_ERROR;
-
-            if (err.message?.includes("compilation")) {
-              verdict = Verdict.COMPILATION_ERROR;
-            } else if (err.message?.includes("timeout")) {
-              verdict = Verdict.TIME_LIMIT_EXCEEDED;
-            }
-
             results.push({
               testcaseId: testcase.id,
-              verdict,
+              verdict: Verdict.RUNTIME_ERROR,
               stdout: "",
-              stderr: err.message || "Error during execution",
+              stderr: err.message ?? "Unknown error",
               time: 0,
               memory: 0,
             });
@@ -86,7 +83,6 @@ export const startRunConsumer = async () => {
         }
         console.log(results);
         sendRunResult(userId, { results });
-
         channel.ack(msg);
       } catch (err) {
         console.error("Run consumer error:", err);
