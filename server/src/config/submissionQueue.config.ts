@@ -78,7 +78,7 @@ export const startSubmissionConsumer = async () => {
           uploadStderrToS3(verdict === Verdict.ACCEPTED ? "No error" : verdict),
         ]);
 
-        await prisma.submission.update({
+        const result = await prisma.submission.update({
           where: { id: submissionId },
           data: {
             status: verdict,
@@ -86,16 +86,13 @@ export const startSubmissionConsumer = async () => {
             memoryUsed: maxMemory,
             stdoutFileUrl,
             stderrFileUrl,
-          },
+          }
         });
 
         // ✅ Emit WebSocket event with verdict
-        sendSubmissionResult(submission.userId, {
-          submissionId,
-          verdict,
-          executionTime: maxTime,
-          memoryUsed: maxMemory,
-        });
+        console.log(result);
+        
+        sendSubmissionResult(submission.userId, result);
 
         channel.ack(msg);
       } catch (error) {

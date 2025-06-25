@@ -1,11 +1,18 @@
 import axios from "axios";
 
-const JUDGE0_URL = "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true";
+const JUDGE0_URL = "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true";
 const RAPIDAPI_HOST = "judge0-ce.p.rapidapi.com";
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY!;
 
 if (!RAPIDAPI_KEY) {
   throw new Error("❌ RAPIDAPI_KEY is not defined in environment variables.");
+}
+
+function toBase64(str: string): string {
+  return Buffer.from(str, "utf-8").toString("base64");
+}
+function fromBase64(str: string): string {
+  return Buffer.from(str, 'base64').toString('utf-8');
 }
 
 export async function executeWithJudge0(
@@ -25,11 +32,11 @@ export async function executeWithJudge0(
     const response = await axios.post(
       JUDGE0_URL,
       {
-        source_code: sourceCode,
-        stdin: input,
+        source_code: toBase64(sourceCode),
+        stdin: toBase64(input),
         language_id: languageId,
-        cpu_time_limit: timeLimit ?? 2,           // optional fallback
-        memory_limit: memoryLimit ? memoryLimit * 1024 : 128000, // KB
+        cpu_time_limit: timeLimit ?? 2,
+        memory_limit: memoryLimit ? memoryLimit * 1024 : 128000,
       },
       {
         headers: {
@@ -43,10 +50,10 @@ export async function executeWithJudge0(
     const { stdout, stderr, time, memory, status } = response.data;
 
     return {
-      stdout: stdout ?? "",
-      stderr: stderr ?? "",
+      stdout: stdout ? fromBase64(stdout) : "",
+      stderr: stderr ? fromBase64(stderr) : "",
       time: parseFloat(time ?? "0"),
-      memory: memory ?? 0,
+      memory: memory ? parseFloat((memory / 1024).toFixed(2)) : 0,
       status: status?.description ?? "Unknown",
     };
   } catch (error: any) {

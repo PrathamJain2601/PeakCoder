@@ -27,7 +27,7 @@ const ProblemRow: React.FC<ProblemRowProps> = React.memo(({ problem, isEven }) =
     if (!problem.submissions || problem.submissions.length === 0) {
       return "Not Attempted";
     }
-    const hasAccepted = problem.submissions.some((s) => s.verdict === "ACCEPTED");
+    const hasAccepted = problem.submissions.some((s) => s.status === "ACCEPTED");
     return hasAccepted ? "Accepted" : "Attempted";
   };
 

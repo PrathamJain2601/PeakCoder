@@ -1,12 +1,12 @@
 import { userType } from '@/types/user';
 import { createSlice } from '@reduxjs/toolkit';
 
-type init = {
-  user: userType
-}
+type InitState = {
+  user: userType | null;
+};
 
-const initialState:init = {
-    user: null,
+const initialState: InitState = {
+  user: null,
 };
 
 const userSlice = createSlice({

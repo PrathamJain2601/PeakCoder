@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { Problem } from "@/types/problem";
-import { LoadedTestCase } from "../description/page";
+import { LoadedTestCase } from "../page";
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -38,7 +38,8 @@ export default function ProblemDescription( { problem, loadedTestCases }: Proble
     if (!problem.submissions || problem.submissions.length === 0) {
       return "Not Attempted";
     }
-    const hasAccepted = problem.submissions.some((s) => s.verdict === "ACCEPTED");
+    console.log(problem.submissions);
+    const hasAccepted = problem.submissions.some((s) => s.status == "ACCEPTED");
     return hasAccepted ? "Accepted" : "Attempted";
   };
 

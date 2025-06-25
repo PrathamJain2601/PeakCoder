@@ -13,5 +13,9 @@ export const links = {
         deleteProblem: (id: string) => `/problems/${id}`,
         addTestCase: (problemId: string) => `/problems/${problemId}/testcases`,
         // updateProblem: (id: string) => `/problems/${id}`,
+    },
+    submission:{
+        submitCode: "/submissions/submit",
+        runCode: "/submissions/run",
     }
 }

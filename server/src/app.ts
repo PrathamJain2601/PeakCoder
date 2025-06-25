@@ -55,8 +55,8 @@ app.get("/protected-route", isAuthorized, (req, res)=>{
     return;
 })
 
-app.listen(PORT, ()=>{
-    console.log(`server running on port ${process.env.PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 

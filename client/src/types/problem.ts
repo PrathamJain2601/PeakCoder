@@ -38,7 +38,7 @@ export interface Submission {
   languageId: number;
   language: Language;
   sourceCodeFileUrl: string;
-  verdict: Verdict;
+  status: Verdict;
   executionTime?: number;
   memoryUsed?: number;
   stdoutFileUrl?: string;
@@ -48,8 +48,23 @@ export interface Submission {
 }
 
 export interface Language {
-  id: number;
+  languageId: number;
   name: string;
-  extension: string;
+  boilerplate: string;
+  value: string;
 }
 
+export interface runPayload {
+  code: string;
+  problemId: string;
+  languageId: number;
+}
+
+export interface runResult{
+  testcaseId: string;
+    verdict: string;
+    stdout: string;
+    stderr: string;
+    time: number;
+    memory: number;
+}

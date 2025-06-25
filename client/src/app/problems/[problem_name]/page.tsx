@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import ProblemDescription from "../components/problem-desctiption"
-import CodeEditor from "../components/code-editor"
-import TestCases from "../components/test-cases"
+import ProblemDescription from "./components/problem-desctiption"
+import ProblemSubmission from "./components/problem-submission"
+import CodeEditor from "./components/code-editor"
+import TestCases from "./components/test-cases"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -15,6 +16,7 @@ import { useFetchTestcase } from "@/mutations/testcaseQuery"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import { TestCase } from "@/types/problem"
+import { connectSocket, getSocket } from "@/lib/socket"
 
 export interface LoadedTestCase {
   id: string
@@ -24,9 +26,6 @@ export interface LoadedTestCase {
 }
 
 function Page() {
-  const [code, setCode] = useState("")
-  const [language, setLanguage] = useState("javascript")
-  const [output, setOutput] = useState("")
   const { problem_name: id } = useParams();
 
   const problemId = Array.isArray(id) ? id[0] : id;
@@ -34,8 +33,23 @@ function Page() {
   const { data: problem, isLoading, error } = useFetchProblem(problemId);
   const { mutateAsync: fetchTestcases } = useFetchTestcase();
   const sampleTestcases = useSelector((state: RootState) => state.problem.selectedTestcase);
+  const submissions = useSelector((state: RootState) => state.problem.selectedProblem?.submissions)
+  const [submitPending, setSubmitPending] = useState<boolean> (false);
   const [loadedTestCases, setLoadedTestCases] = useState<LoadedTestCase[]>([])
+  const [activeTab, setActiveTab] = useState<string>("description");
+  const user = useSelector((state: RootState) => state.user);
 
+    useEffect(() => {
+      console.log("came here", user.user?.id);
+      console.log("socket", getSocket());
+  
+      if (user.user?.id && (!getSocket() || !getSocket()?.connected)
+      ) {
+        console.log("🔌 Reconnecting socket after page load...");
+        connectSocket(user.user?.id);
+      }
+    }, [user]);
+  
   useEffect(() => {
     const loadTestCases = async () => {
       try {
@@ -65,6 +79,11 @@ function Page() {
     loadTestCases()
   }, [sampleTestcases])
 
+  useEffect(()=> {
+    setSubmitPending(true);
+    setActiveTab("submissions");
+  }, [submissions])
+
   useEffect(() => {
     if (problem?.id) {
       fetchTestcases(problem.id);
@@ -80,11 +99,11 @@ function Page() {
   if (!problem) return <div>No problem found</div>
 
   const handleRunCode = () => {
-    setOutput("Code execution result will be displayed here.")
+    console.log("Running code with:")
   }
 
   const handleSubmitCode = () => {
-    setOutput("Code submission result will be displayed here.")
+    console.log("Submitting code with:")
   }
 
   return (
@@ -93,23 +112,42 @@ function Page() {
         direction="horizontal"
         className="rounded-lg border flex h-full bg-gray-900 text-white"
       >
-        <ResizablePanel defaultSize={35}>
-          <ProblemDescription problem={problem} loadedTestCases={loadedTestCases} />
+        <ResizablePanel defaultSize={35} className="pb-10">
+          <div className="flex border-b border-gray-700 bg-gray-800">
+            <button
+              className={`px-4 py-3 text-sm font-medium transition-colors ${
+                activeTab === "description"
+                  ? "text-white border-b-2 border-blue-500 bg-gray-700"
+                  : "text-gray-400 hover:text-white hover:bg-gray-700"
+              }`}
+              onClick={() => setActiveTab("description")}
+            >
+              Description
+            </button>
+            <button
+              className={`px-4 py-3 text-sm font-medium transition-colors ${
+                activeTab === "submissions"
+                  ? "text-white border-b-2 border-blue-500 bg-gray-700"
+                  : "text-gray-400 hover:text-white hover:bg-gray-700"
+              }`}
+              onClick={() => setActiveTab("submissions")}
+            >
+              Submissions
+            </button>
+          </div>
+            {activeTab === "description" ? 
+            <ProblemDescription problem={problem} loadedTestCases={loadedTestCases} /> : 
+            <ProblemSubmission submissions={submissions} />}
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={65}>
           <ResizablePanelGroup direction="vertical" className="h-full">
             <ResizablePanel defaultSize={65}>
-              <CodeEditor
-                code={code}
-                language={language}
-                onChange={setCode}
-                onLanguageChange={setLanguage}
-              />
+              <CodeEditor />
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={35}>
-              <TestCases loadedTestCases={loadedTestCases} output={output} onRun={handleRunCode} onSubmit={handleSubmitCode} />
+              <TestCases loadedTestCases={loadedTestCases} onRun={handleRunCode} onSubmit={handleSubmitCode} submitPending={submitPending} setSubmitPending={setSubmitPending} />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

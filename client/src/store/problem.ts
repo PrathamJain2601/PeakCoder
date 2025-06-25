@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Problem, TestCase } from "@/types/problem"; 
+import { Problem, Submission, TestCase } from "@/types/problem"; 
 
 type InitState = {
   selectedProblem: Problem | null;
@@ -26,11 +26,16 @@ const problemSlice = createSlice({
     setTestcase: (state, action: PayloadAction<TestCase[]>) => {
       state.selectedTestcase = action.payload || null;
     },
+    setSubmission: (state, action: PayloadAction<Submission>) => {
+      if(state.selectedProblem?.submissions){
+        state.selectedProblem.submissions.push(action.payload);
+      }
+    },
     clearProblem: (state) => {
       state.selectedProblem = null;
     },
   },
 });
 
-export const { setProblem, clearProblem, setTestcase, setProblems } = problemSlice.actions;
+export const { setProblem, clearProblem, setTestcase, setProblems, setSubmission } = problemSlice.actions;
 export default problemSlice.reducer;

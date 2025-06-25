@@ -22,4 +22,4 @@ export type userType = {
     role: string,
     updatedAt: string,
     username: string
-} | null
+}
