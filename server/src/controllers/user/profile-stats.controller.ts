@@ -33,7 +33,7 @@ export const profileStats = async (req: Request, res: Response) => {
       .sort((a, b) => b.problemsSolved - a.problemsSolved);
 
     // Find rank of current user
-    let rank = -1;
+    let rank = 0;
     for (let i = 0; i < leaderboard.length; i++) {
       if (leaderboard[i].userId === id) {
         rank = i + 1;

@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Languages } from "@/lib/languages";
 import { Play } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type runButtonProps = {
   runPending: boolean;
@@ -22,7 +23,14 @@ export default function RunButton({runPending, setRunPending} : runButtonProps) 
     return lang ? lang.languageId : 1; 
   }
 
+  const router = useRouter();
+  const user = useSelector((state: RootState) => state.user.user);
+
   const handleRun = async () => {
+    if(user?.id == undefined || user?.isVerified == false || user?.id == null || user?.isVerified == null){
+      router.push("/auth");
+      return;
+    }
     if (!problemId) return;
     try{
         setRunPending(true);

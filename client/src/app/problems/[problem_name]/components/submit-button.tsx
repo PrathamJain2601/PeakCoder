@@ -4,6 +4,7 @@ import { RootState } from "@/store/store";
 import { Languages } from "@/lib/languages";
 import { Send } from "lucide-react";
 import { setSubmitPending } from "@/store/problem";
+import { useRouter } from "next/navigation";
 
 
 export default function SubmitButton() {
@@ -14,6 +15,8 @@ export default function SubmitButton() {
   const language = useSelector((state: RootState) => state.code.Language);
   const problemId = useSelector((state: RootState) => state.problem.selectedProblem?.id); 
   const submitPending = useSelector((state: RootState) => state.problem.submitPending);
+  const router = useRouter();
+    const user = useSelector((state: RootState) => state.user.user);
   
   const dispatch = useDispatch();
 
@@ -23,6 +26,10 @@ export default function SubmitButton() {
   }
 
   const handleSubmit = async () => {
+    if(user?.id == undefined || user?.isVerified == false || user?.id == null || user?.isVerified == null){
+      router.push("/auth");
+      return;
+    }
     if (!problemId) return;
     try{
         dispatch(setSubmitPending(true))

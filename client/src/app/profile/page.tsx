@@ -10,9 +10,9 @@ const RecentSubmissions = lazy(() => import("./components/recent-submissions"));
 
 export default function ProfilePage() {
    const router = useRouter()
-      const user = useSelector((state: RootState)=> state.user.user?.id)
+      const user = useSelector((state: RootState)=> state.user.user)
     useEffect(() => {
-      if (!user) {
+      if(user?.id == undefined || user?.isVerified == false || user?.id == null || user?.isVerified == null){
         router.push("/auth")
       }
     }, [user, router])
