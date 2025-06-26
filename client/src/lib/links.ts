@@ -17,5 +17,10 @@ export const links = {
     submission:{
         submitCode: "/submissions/submit",
         runCode: "/submissions/run",
+    },
+    user: {
+        getStatistics: "/user/profile-stats",
+        getRecentSubmissions: "/user/recent-submissions",
+        getLeaderboard: "/user/leaderboard"
     }
 }

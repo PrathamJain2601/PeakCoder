@@ -3,8 +3,7 @@
 import { useState } from "react"
 import { ChevronDown, ChevronRight, Clock, Cpu, Divide, HardDrive } from "lucide-react"
 import { Submission } from "@/types/problem"
-import { Languages } from "@/lib/languages"
-import timeAgo from "@/lib/timeAgo"
+import {timeAgo, languageIdToName, getVerdictColor, getVerdictBg, verdictToText} from "@/lib/utilityFunction"
 
 type submissionProp = {
     submissions?: Submission[] 
@@ -13,14 +12,6 @@ type submissionProp = {
 export default function ProblemSubmission({submissions}: submissionProp) {
   const [expandedSubmission, setExpandedSubmission] = useState<string | null>(null)
   const [loadingCode, setLoadingCode] = useState<string | null>(null)
-
-  const languageIdToName = (id: number)=> {
-    const obj = Languages.find((language)=> {
-        return language.languageId == id;
-    });
-    if(obj) return obj.name;
-    return "Java";
-  }
 
   const handleSubmissionClick = async (submissionId: string) => {
     if (expandedSubmission === submissionId) {
@@ -32,39 +23,6 @@ export default function ProblemSubmission({submissions}: submissionProp) {
     setExpandedSubmission(submissionId)
   }
 
-  const getVerdictColor = (verdict: Submission["status"]) => {
-    switch (verdict) {
-      case "ACCEPTED":
-        return "text-green-400"
-      case "WRONG_ANSWER":
-        return "text-red-400"
-      case "TIME_LIMIT_EXCEEDED":
-        return "text-yellow-400"
-      case "RUNTIME_ERROR":
-        return "text-orange-400"
-      case "COMPILATION_ERROR":
-        return "text-purple-400"
-      default:
-        return "text-gray-400"
-    }
-  }
-
-  const getVerdictBg = (verdict: Submission["status"]) => {
-    switch (verdict) {
-      case "ACCEPTED":
-        return "bg-green-900/20 border-green-700/30"
-      case "WRONG_ANSWER":
-        return "bg-red-900/20 border-red-700/30"
-      case "TIME_LIMIT_EXCEEDED":
-        return "bg-yellow-900/20 border-yellow-700/30"
-      case "RUNTIME_ERROR":
-        return "bg-orange-900/20 border-orange-700/30"
-      case "COMPILATION_ERROR":
-        return "bg-purple-900/20 border-purple-700/30"
-      default:
-        return "bg-gray-900/20 border-gray-700/30"
-    }
-  }
   if(!submissions || submissions.length === 0){ 
         return (<div className="text-center py-12">
           <div className="text-gray-400 text-lg mb-2">No submissions yet</div>
@@ -97,7 +55,7 @@ export default function ProblemSubmission({submissions}: submissionProp) {
                     )}
                   </div>
 
-                  <div className={`font-semibold ${getVerdictColor(submission.status)}`}>{submission.status}</div>
+                  <div className={`font-semibold ${getVerdictColor(submission.status)}`}>{verdictToText(submission.status)}</div>
 
                   <div className="text-gray-300 font-medium">{languageIdToName(submission.languageId)}</div>
                 </div>
@@ -118,12 +76,12 @@ export default function ProblemSubmission({submissions}: submissionProp) {
                     <div className="flex items-center gap-x-2">
                         <Cpu size={14} />
                         Runtime
-                        <span>{submission.executionTime}</span>
+                        <span>{submission.executionTime}s</span>
                       </div>
                       <div className="flex items-center gap-x-2">
                         <HardDrive size={14} />
                         Memory
-                        <span>{submission.memoryUsed}</span>
+                        <span>{submission.memoryUsed}mb</span>
                     </div>
                   <h4 className="text-sm font-medium text-gray-300 my-3">Submitted Code:</h4>
                   {loadingCode === submission.id ? (

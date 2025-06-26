@@ -10,8 +10,19 @@ import { registerPayload } from "@/types/user"
 import { useRegisterMutation } from "@/mutations/registerMutation"
 import { useLoginMutation } from "@/mutations/loginMutation"
 import { useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
 
 const Page = () => {
+   const router = useRouter()
+    const user = useSelector((state: RootState)=> state.user.user?.id)
+    useEffect(() => {
+      if (user) {
+        router.push("/problemset")
+      }
+    }, [user, router])
+  
+    if (user) return null 
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState<registerPayload>({
     name: "",
@@ -21,7 +32,7 @@ const Page = () => {
   });
 
   const {mutateAsync: registerMutation, isPending: registerPending, error: registerError} = useRegisterMutation(()=>setIsLogin(true));
-  const router = useRouter();
+
   const {
     mutateAsync: loginMutation,
     isPending: loginPending,

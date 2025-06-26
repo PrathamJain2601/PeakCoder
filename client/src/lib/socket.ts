@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { store } from "@/store/store";
 import { setRunResult } from "@/store/code";
-import { setSubmission } from "@/store/problem";
+import { setActiveTab, setSubmission, setSubmitPending } from "@/store/problem";
 
 let socket: Socket | null = null;
 
@@ -31,6 +31,8 @@ export const connectSocket = (userId: string) => {
   socket.on("submission-result", (data)=> {
     console.log("📩 Received submit-result:", data);
     store.dispatch(setSubmission(data));
+    store.dispatch(setActiveTab("submissions"));
+    store.dispatch(setSubmitPending(false));
   })
 
   socket.on("disconnect", () => {

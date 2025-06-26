@@ -1,21 +1,21 @@
 import { useSubmitMutation } from "@/mutations/submitMutation"; // wherever your mutation file is
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Languages } from "@/lib/languages";
 import { Send } from "lucide-react";
+import { setSubmitPending } from "@/store/problem";
 
-type submitButtonProps = {
-  submitPending: boolean;
-  setSubmitPending: (pending: boolean) => void;
-}
 
-export default function SubmitButton({submitPending, setSubmitPending} : submitButtonProps) {
+export default function SubmitButton() {
   const {
     mutateAsync: runCode, 
   } = useSubmitMutation();
   const code = useSelector((state: RootState) => state.code.code);
   const language = useSelector((state: RootState) => state.code.Language);
   const problemId = useSelector((state: RootState) => state.problem.selectedProblem?.id); 
+  const submitPending = useSelector((state: RootState) => state.problem.submitPending);
+  
+  const dispatch = useDispatch();
 
   function getLanguageId(languageName: string): number {
     const lang = Languages.find((lang) => lang.name === languageName);
@@ -25,14 +25,14 @@ export default function SubmitButton({submitPending, setSubmitPending} : submitB
   const handleSubmit = async () => {
     if (!problemId) return;
     try{
-        setSubmitPending(true);
+        dispatch(setSubmitPending(true))
         await runCode({
           problemId,
           code: code.toString(), 
           languageId: getLanguageId(language), 
         });
     } catch (err) {
-        setSubmitPending(false);
+        dispatch(setSubmitPending(false))
         console.error("Run failed:", err);
     }
   };

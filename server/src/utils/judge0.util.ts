@@ -5,7 +5,7 @@ const RAPIDAPI_HOST = "judge0-ce.p.rapidapi.com";
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY!;
 
 if (!RAPIDAPI_KEY) {
-  throw new Error("❌ RAPIDAPI_KEY is not defined in environment variables.");
+  throw new Error("RAPIDAPI_KEY is not defined in environment variables.");
 }
 
 function toBase64(str: string): string {
@@ -57,7 +57,7 @@ export async function executeWithJudge0(
       status: status?.description ?? "Unknown",
     };
   } catch (error: any) {
-    console.error("❌ Judge0 Execution Failed:", error.response?.data || error.message);
+    console.error("Judge0 Execution Failed:", error.response?.data || error.message);
     throw new Error("Judge0 execution failed");
   }
 }

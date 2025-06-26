@@ -44,9 +44,9 @@ app.get('/verify-email', verifyEmail);
 import otp from "./routes/otp.routes.js";
 app.use("/otp", otp);
 import user from "./routes/user.routes.js";
-app.use("/user", isAuthorized, user);
+app.use("/user", user);
 import problem from "./routes/problem.routes.js";
-app.use("/problems", isAuthorized, problem);
+app.use("/problems", problem);
 import submission from "./routes/submission.routes.js";
 app.use("/submissions", isAuthorized, submission);
 

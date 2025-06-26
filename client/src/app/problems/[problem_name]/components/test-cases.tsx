@@ -7,33 +7,14 @@ import RunButton from "./run-button"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import SubmitButton from "./submit-button"
-
-function verdictToText(verdict: string): string{
-  if(verdict == 'WRONG_ANSWER'){
-    return "Wrong Answer";
-  }
-  else if(verdict == 'TIME_LIMIT_EXCEEDED'){
-    return "Time Limit Exceeded";
-  }
-  else if(verdict == "MEMORY_LIMIT_EXCEEDED"){
-    return "Memory Limit Exceeded";
-  }
-  else if(verdict == "RUNTIME_ERROR"){
-      return "Runtime Error";
-  }
-  else{
-    return "Compilation Error";
-  }
-}
+import { verdictToText } from "@/lib/utilityFunction"
 interface TestCasesProps {
   onRun: () => void
   onSubmit: () => void
   loadedTestCases: LoadedTestCase[]
-  submitPending: boolean
-  setSubmitPending: (isPending: boolean)=> void
 }
 
-export default function TestCases({onRun, onSubmit, loadedTestCases, submitPending, setSubmitPending }: TestCasesProps) {
+export default function TestCases({onRun, onSubmit, loadedTestCases }: TestCasesProps) {
   const [activeTab, setActiveTab] = useState<string>("")
   const run = useSelector((state: RootState) => state.code.run);
   const [verdict, setVerdict] = useState<string>("");
@@ -99,7 +80,7 @@ export default function TestCases({onRun, onSubmit, loadedTestCases, submitPendi
       </div>
       <div className="flex justify-end p-4 border-t border-gray-700">
         <RunButton runPending={runPending} setRunPending={setRunPending} />
-        <SubmitButton submitPending={submitPending} setSubmitPending={setSubmitPending} />
+        <SubmitButton />
       </div>
     </div>
   )

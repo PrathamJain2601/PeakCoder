@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"; 
 import { Languages } from "@/lib/languages";
 import { runResult } from "@/types/problem";
+import { logout } from "./user";
 
 
 type InitState = {
@@ -29,6 +30,13 @@ const codeSlice = createSlice({
       state.run = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(logout, (state) => {
+      state.run = [];
+      state.code = "";
+      state.Language = "C++"
+    });
+  }
 });
 
 export const { setCode, setLanguage, setRunResult } = codeSlice.actions;

@@ -7,6 +7,7 @@ import { addTestCase } from "../controllers/problem/add-testcase.controller";
 import { getSingleProblem } from "../controllers/problem/get-single-problem.controller";
 import { getSampleTestcases } from "../controllers/problem/get-sample-testcase.controller";
 import multer from "multer";
+import { isAuthorized } from "../middlewares/auth.middleware";
 
 // Multer configuration (stores file in memory before upload)
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
@@ -15,9 +16,9 @@ const router = Router();
 router.get("/:id", getSingleProblem);
 router.get("/:id/testcases", getSampleTestcases);
 router.get("/", getProblems);
-router.post("/", createProblem);
+router.post("/", isAuthorized, createProblem);
 // router.put("/:id", updateProblem);
-router.delete("/:id", deleteProblem);
-router.post("/:problemId/testcases", upload.fields([{ name: "inputFile", maxCount: 1 }, { name: "outputFile", maxCount: 1 },]), addTestCase);
+router.delete("/:id", isAuthorized, deleteProblem);
+router.post("/:problemId/testcases",isAuthorized, upload.fields([{ name: "inputFile", maxCount: 1 }, { name: "outputFile", maxCount: 1 },]), addTestCase);
 
 export default router;

@@ -3,6 +3,7 @@
 import React from "react"
 import type { Problem } from "@/types/problem"
 import Link from "next/link"
+import { getDifficultyColor, getStatusColor } from "@/lib/utilityFunction"
 
 interface ProblemRowProps {
   problem: Problem
@@ -10,19 +11,7 @@ interface ProblemRowProps {
 }
 
 const ProblemRow: React.FC<ProblemRowProps> = React.memo(({ problem, isEven }) => {
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "EASY":
-        return "text-green-400"
-      case "MEDIUM":
-        return "text-yellow-400"
-      case "HARD":
-        return "text-red-400"
-      default:
-        return "text-gray-400"
-    }
-  }
-
+  
   const getStatusFromSubmissions = () => {
     if (!problem.submissions || problem.submissions.length === 0) {
       return "Not Attempted";
@@ -33,22 +22,11 @@ const ProblemRow: React.FC<ProblemRowProps> = React.memo(({ problem, isEven }) =
 
   const status = getStatusFromSubmissions();
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Accepted":
-        return "text-green-400";
-      case "Attempted":
-        return "text-yellow-400";
-      default:
-        return "text-gray-400"; // Not Attempted
-    }
-  };
-
   return (
     <tr className={`${isEven ? "bg-gray-700" : "bg-gray-800"} transition-colors`}>
       <td className="p-3">
         <Link
-          href={`/problems/${problem.id}/description`}
+          href={`/problems/${problem.id}`}
           className="text-white hover:underline hover:text-blue-400"
         >
           {problem.title}

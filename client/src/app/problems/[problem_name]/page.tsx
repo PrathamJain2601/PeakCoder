@@ -10,13 +10,14 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useFetchProblem } from "@/mutations/problemQuery"
 import { useFetchTestcase } from "@/mutations/testcaseQuery"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import { TestCase } from "@/types/problem"
 import { connectSocket, getSocket } from "@/lib/socket"
+import { setActiveTab } from "@/store/problem"
 
 export interface LoadedTestCase {
   id: string
@@ -34,9 +35,9 @@ function Page() {
   const { mutateAsync: fetchTestcases } = useFetchTestcase();
   const sampleTestcases = useSelector((state: RootState) => state.problem.selectedTestcase);
   const submissions = useSelector((state: RootState) => state.problem.selectedProblem?.submissions)
-  const [submitPending, setSubmitPending] = useState<boolean> (false);
   const [loadedTestCases, setLoadedTestCases] = useState<LoadedTestCase[]>([])
-  const [activeTab, setActiveTab] = useState<string>("description");
+  const activeTab = useSelector((state: RootState) => state.problem.activeTab);
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
@@ -79,11 +80,6 @@ function Page() {
     loadTestCases()
   }, [sampleTestcases])
 
-  useEffect(()=> {
-    setSubmitPending(true);
-    setActiveTab("submissions");
-  }, [submissions])
-
   useEffect(() => {
     if (problem?.id) {
       fetchTestcases(problem.id);
@@ -120,7 +116,7 @@ function Page() {
                   ? "text-white border-b-2 border-blue-500 bg-gray-700"
                   : "text-gray-400 hover:text-white hover:bg-gray-700"
               }`}
-              onClick={() => setActiveTab("description")}
+              onClick={() => dispatch(setActiveTab("description"))}
             >
               Description
             </button>
@@ -130,7 +126,7 @@ function Page() {
                   ? "text-white border-b-2 border-blue-500 bg-gray-700"
                   : "text-gray-400 hover:text-white hover:bg-gray-700"
               }`}
-              onClick={() => setActiveTab("submissions")}
+              onClick={() => dispatch(setActiveTab("submissions"))}
             >
               Submissions
             </button>
@@ -147,7 +143,7 @@ function Page() {
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={35}>
-              <TestCases loadedTestCases={loadedTestCases} onRun={handleRunCode} onSubmit={handleSubmitCode} submitPending={submitPending} setSubmitPending={setSubmitPending} />
+              <TestCases loadedTestCases={loadedTestCases} onRun={handleRunCode} onSubmit={handleSubmitCode} />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

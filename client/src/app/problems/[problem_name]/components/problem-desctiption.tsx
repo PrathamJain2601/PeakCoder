@@ -2,6 +2,7 @@ import { useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { Problem } from "@/types/problem";
 import { LoadedTestCase } from "../page";
+import { getDifficultyColor, getStatusColor } from "@/lib/utilityFunction";
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -21,19 +22,6 @@ export default function ProblemDescription( { problem, loadedTestCases }: Proble
     setActiveHints(activeHints === section ? null : section)
   }
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "EASY":
-        return "text-green-400"
-      case "MEDIUM":
-        return "text-yellow-400"
-      case "HARD":
-        return "text-red-400"
-      default:
-        return "text-gray-400"
-    }
-  }
-
   const getStatusFromSubmissions = () => {
     if (!problem.submissions || problem.submissions.length === 0) {
       return "Not Attempted";
@@ -44,17 +32,6 @@ export default function ProblemDescription( { problem, loadedTestCases }: Proble
   };
 
   const status = getStatusFromSubmissions();
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Accepted":
-        return "text-green-400";
-      case "Attempted":
-        return "text-yellow-400";
-      default:
-        return "text-gray-400";
-    }
-  };
 
   const tags = problem.tags.map(tag => tag.name); 
 

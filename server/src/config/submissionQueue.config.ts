@@ -90,6 +90,7 @@ export const startSubmissionConsumer = async () => {
         });
 
         // ✅ Emit WebSocket event with verdict
+        result.sourceCodeFileUrl = code;
         console.log(result);
         
         sendSubmissionResult(submission.userId, result);

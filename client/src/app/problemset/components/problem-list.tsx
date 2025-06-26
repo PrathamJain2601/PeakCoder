@@ -4,9 +4,12 @@ import React, { useState, useMemo, useEffect } from "react"
 import type { Problem, Difficulty } from "@/types/problem"
 import ProblemRow from "./problem-row"
 import { useFetchProblems } from "@/mutations/problemsQuery"
-import toast from "react-hot-toast"
+import { useRouter } from "next/router"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
 
 const ProblemList: React.FC = () => {
+   
   const [searchTerm, setSearchTerm] = useState("")
   const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "All">("All")
 
