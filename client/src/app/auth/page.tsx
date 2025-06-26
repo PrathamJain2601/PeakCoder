@@ -14,15 +14,18 @@ import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 
 const Page = () => {
-   const router = useRouter()
-    const user = useSelector((state: RootState)=> state.user.user?.id)
+  const router = useRouter();
+   const user = useSelector((state: RootState) => state.user.user);
+    const [checked, setChecked] = useState(false);
+
     useEffect(() => {
-      if (user) {
-        router.push("/problemset")
-      }
-    }, [user, router])
-  
-    if (user) return null 
+      if (user !== null) setChecked(true);
+      if (user) router.push("/problemset");
+    }, [user, router]);
+
+    if (!checked) return null; // wait for user info to load
+    if (user) return null;     // user already redirected
+
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState<registerPayload>({
     name: "",

@@ -9,6 +9,39 @@ export const profileStats = async (req: Request, res: Response) => {
   }
 
   try {
+    // Get all accepted submissions grouped by user and problem
+    const grouped = await prisma.submission.groupBy({
+      by: ["userId", "problemId"],
+      where: { status: "ACCEPTED" },
+    });
+
+    // Count problems solved per user
+    const userProblemMap: Record<string, Set<string>> = {};
+    for (const row of grouped) {
+      if (!userProblemMap[row.userId]) {
+        userProblemMap[row.userId] = new Set();
+      }
+      userProblemMap[row.userId].add(row.problemId);
+    }
+
+    // Generate leaderboard
+    const leaderboard = Object.entries(userProblemMap)
+      .map(([userId, problems]) => ({
+        userId,
+        problemsSolved: problems.size,
+      }))
+      .sort((a, b) => b.problemsSolved - a.problemsSolved);
+
+    // Find rank of current user
+    let rank = -1;
+    for (let i = 0; i < leaderboard.length; i++) {
+      if (leaderboard[i].userId === id) {
+        rank = i + 1;
+        break;
+      }
+    }
+
+    // Get user submissions with problem difficulty
     const submissions = await prisma.submission.findMany({
       where: { userId: id },
       include: {
@@ -19,7 +52,6 @@ export const profileStats = async (req: Request, res: Response) => {
     });
 
     const totalSubmissions = submissions.length;
-
     const accepted = submissions.filter((s) => s.status === "ACCEPTED");
 
     const solvedProblems = new Set<string>();
@@ -36,7 +68,6 @@ export const profileStats = async (req: Request, res: Response) => {
     }
 
     const problemsSolved = solvedProblems.size;
-
     const acceptanceRate =
       totalSubmissions > 0 ? parseFloat(((problemsSolved / totalSubmissions) * 100).toFixed(2)) : 0;
 
@@ -44,15 +75,19 @@ export const profileStats = async (req: Request, res: Response) => {
     const medium = difficultyMap.MEDIUM.size;
     const hard = difficultyMap.HARD.size;
 
-    return responseCodes.success.ok(res, {
+    return responseCodes.success.ok(
+      res,
+      {
         totalSubmissions,
-        problemsSolved, 
+        problemsSolved,
         acceptanceRate,
+        rank,
         easy,
         medium,
         hard,
-      }, "Profile stats fetched successfully");
-
+      },
+      "Profile stats fetched successfully"
+    );
   } catch (e) {
     console.error("Error fetching profile stats:", e);
     return responseCodes.serverError.internalServerError(res, "Failed to fetch profile stats");
