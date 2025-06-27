@@ -14,7 +14,6 @@ import {
   REGISTER,
 } from "redux-persist";
 
-// Safe for SSR
 const createNoopStorage = () => {
   return {
     getItem() {
@@ -29,10 +28,13 @@ const createNoopStorage = () => {
   };
 };
 
-let storage: typeof import("redux-persist/lib/storage").default | ReturnType<typeof createNoopStorage>;
+// Async storage init
+let storage: any;
 
 if (typeof window !== "undefined") {
-  storage = require("redux-persist/lib/storage").default;
+  // Dynamic import so no require()
+  const storageModule = await import("redux-persist/lib/storage");
+  storage = storageModule.default;
 } else {
   storage = createNoopStorage();
 }
