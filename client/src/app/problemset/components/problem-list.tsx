@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo } from "react"
+import React from "react"
 import ProblemRow from "./problem-row"
 import { useFetchProblems } from "@/mutations/problemsQuery"
 
