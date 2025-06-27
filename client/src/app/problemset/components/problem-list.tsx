@@ -1,26 +1,17 @@
 "use client"
 
 import React, { useMemo } from "react"
-import type { Problem } from "@/types/problem"
 import ProblemRow from "./problem-row"
 import { useFetchProblems } from "@/mutations/problemsQuery"
 
 const ProblemList: React.FC = () => {
   const { data: problems = [], isLoading } = useFetchProblems()
-
-  const filteredProblems = useMemo(() => {
-    return problems.filter((problem: Problem) => {
-      console.log(problem) 
-      return true
-    })
-  }, [problems])
-
+  
   if (isLoading) {
     return <div className="text-center text-gray-500">Loading problems...</div>
   }
-
-  console.log("Filtered Problems:", filteredProblems)
-
+  
+  console.log(problems);
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
@@ -33,7 +24,7 @@ const ProblemList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredProblems.map((problem, index) => (
+          {problems.map((problem, index) => (
             <ProblemRow key={problem.id} problem={problem} isEven={index % 2 === 0} />
           ))}
         </tbody>
