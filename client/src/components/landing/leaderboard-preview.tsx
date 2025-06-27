@@ -50,7 +50,7 @@ export default function LeaderboardPreview() {
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-              Who's Leading Today?
+              {"Who's Leading Today?"}
             </span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -74,7 +74,7 @@ export default function LeaderboardPreview() {
 
             {/* Rows */}
             <div className="divide-y divide-gray-700">
-              {topUsers.map((user, index) => (
+              {topUsers.map((user) => (
                 <div
                   key={user.username}
                   className={`px-6 py-4 hover:bg-gray-750 transition-colors ${

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, ChevronRight, Clock, Cpu, Divide, HardDrive } from "lucide-react"
+import { ChevronDown, ChevronRight, Clock, Cpu, HardDrive } from "lucide-react"
 import { Submission } from "@/types/problem"
 import {timeAgo, languageIdToName, getVerdictColor, getVerdictBg, verdictToText} from "@/lib/utilityFunction"
 

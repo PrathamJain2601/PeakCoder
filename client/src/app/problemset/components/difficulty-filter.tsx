@@ -2,7 +2,6 @@
 
 import React, { useState } from "react"
 import { ChevronDown } from 'lucide-react';
-import type { Difficulty } from "@/types/problem"
 
 const DifficultyFilter = () => {
   const [toggle, setToggle] = useState(false);

@@ -14,7 +14,6 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900/20 to-purple-900/20"></div>
       <div className="absolute inset-0 px-4 sm:px-6 lg:px-12">
         <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -24,17 +23,15 @@ export default function Hero() {
 
       <div className="container mx-auto py-20 relative z-10 px-8 sm:px-10 lg:px-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
+  
           <div
             className={`space-y-8 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
-            {/* Badge */}
             <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full px-4 py-2 text-sm">
               <Zap size={16} className="text-blue-400" />
               <span className="text-blue-300">New: Real-time Code Execution</span>
             </div>
 
-            {/* Main Headline */}
             <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
                 Master
@@ -47,19 +44,17 @@ export default function Hero() {
               </span>
             </h1>
 
-            {/* Subheadline */}
             <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
               Elevate Your Coding Skills with PeakCoder. Join thousands of coders improving their algorithmic thinking,
               speed, and problem-solving with our intuitive, real-time coding platform.
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <button
               onClick={()=> {router.push('/auth')}}
               className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25">
                 <span className="flex items-center space-x-2">
-                  <span>Get Started — It's Free</span>
+                  <span>{"Get Started — It's Free"}</span>
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </span>
               </button>
@@ -73,7 +68,6 @@ export default function Hero() {
               </button>
             </div>
 
-            {/* Stats */}
             <div className="flex space-x-8 pt-8">
               <div>
                 <div className="text-3xl font-bold text-blue-400">1000+</div>
@@ -90,15 +84,12 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Visual */}
           <div
             className={`relative transition-all duration-1000 delay-300 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}
           >
             <div className="relative">
-              {/* Main Illustration Placeholder */}
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 shadow-2xl">
                 <div className="space-y-4">
-                  {/* Code Editor Mockup */}
                   <div className="bg-gray-900 rounded-lg p-4 border border-gray-600">
                     <div className="flex space-x-2 mb-3">
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -120,7 +111,6 @@ export default function Hero() {
                     </div>
                   </div>
 
-                  {/* Success Message */}
                   <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3">
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -131,7 +121,6 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Floating Elements */}
               <div className="absolute -top-4 -right-4 bg-blue-500 p-3 rounded-xl shadow-lg animate-bounce">
                 <Code size={24} className="text-white" />
               </div>

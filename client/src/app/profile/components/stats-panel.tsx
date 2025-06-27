@@ -48,7 +48,7 @@ const statsData: StatCard[] = [
 
 export default function StatsPanel() {
 
-  let { data: statistics = null, isLoading, error } = useFetchStatistics();
+  const { data: statistics = null, isLoading } = useFetchStatistics();
 
   if(isLoading) return (<>Loading Statistics...</>)
   const chartData: DifficultyData[] = [
@@ -93,7 +93,7 @@ export default function StatsPanel() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip />
                 <Legend className="text-white"
                   wrapperStyle={{
                     fontSize: "14px",
@@ -124,14 +124,3 @@ function StatCard({ title, value, icon, color, bgColor }: StatCard) {
     </div>
   )
 }
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-gray-800 border border-gray-700 text-white p-2 rounded">
-        <p className="text-sm font-medium">{payload[0].name}: {payload[0].value}</p>
-      </div>
-    );
-  }
-  return null;
-};

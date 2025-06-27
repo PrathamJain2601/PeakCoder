@@ -2,7 +2,6 @@
 
 import React, { useState } from "react"
 import { ChevronDown } from 'lucide-react';
-import { Verdict } from "@/types/problem"
 
 const StatusFilter = () => {
   const [toggle, setToggle] = useState(false);

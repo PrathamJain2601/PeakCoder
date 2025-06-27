@@ -14,8 +14,6 @@ interface LoginComponentProps {
 export default function LoginComponent({ onSwitchToSignup }: LoginComponentProps) {
   const {
     mutateAsync: loginMutation,
-    isPending: loginPending,
-    error: loginError,
     isSuccess: loginSuccess,
   } = useLoginMutation();
 
@@ -180,7 +178,7 @@ export default function LoginComponent({ onSwitchToSignup }: LoginComponentProps
       {/* Switch to Signup */}
       <div className="text-center">
         <p className="text-gray-600 dark:text-gray-400 text-sm">
-          Don't have an account?{" "}
+          {"Don't have an account?"}
           <button
             onClick={onSwitchToSignup}
             className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-semibold transition-colors duration-200"

@@ -11,7 +11,7 @@ interface SignupComponentProps {
 }
 
 export default function SignupComponent({ onSwitchToLogin }: SignupComponentProps) {
-     const {mutateAsync: registerMutation, isPending: registerPending, error: registerError} = useRegisterMutation(()=>onSwitchToLogin());
+     const {mutateAsync: registerMutation} = useRegisterMutation(()=>onSwitchToLogin());
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     name: "",

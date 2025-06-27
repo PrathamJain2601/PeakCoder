@@ -36,7 +36,7 @@ export const useFetchRecentSubmissions = () => {
             dispatch(setRecentSubmission(data));
             toast.success("recent submissions loaded");
         }
-    }, [data, isLoading]);
+    }, [data, isLoading, dispatch]);
 
     useEffect(() => {
     if (error) {

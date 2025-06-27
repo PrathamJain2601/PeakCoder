@@ -1,5 +1,5 @@
 import { user } from "@/store/user";
-import { loginPayload, userType } from "@/types/user";
+import { loginPayload } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";

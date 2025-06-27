@@ -5,11 +5,7 @@ import {
   ArrowLeft,
   Clock,
   Cpu,
-  HardDrive,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  AlertCircle,
+  HardDrive
 } from "lucide-react"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism"
@@ -30,15 +26,14 @@ export default function SubmissionDetailsPage() {
       }
     }, [user, router])
   
-    if (!user) return null 
-  const submissionId = params.id as string
-
-  const storedSubmissions = useSelector(
-    (state: RootState) => state.user.recentSubmissions
-  )
-  const [submission, setSubmission] = useState<RecentSubmissions | null>(null)
+    const submissionId = params.id as string
+    
+    const storedSubmissions = useSelector(
+      (state: RootState) => state.user.recentSubmissions
+    )
+    const [submission, setSubmission] = useState<RecentSubmissions | null>(null)
   const { data, isLoading } = useFetchRecentSubmissions()
-
+  
   useEffect(() => {
     if (storedSubmissions && storedSubmissions.length > 0) {
       const found = storedSubmissions.find((s) => s.id === submissionId)
@@ -55,29 +50,30 @@ export default function SubmissionDetailsPage() {
       }
     }
   }, [storedSubmissions, data, isLoading, submissionId])
-
-
+  
+  
   const getLanguageExtension = (language: string) => {
     switch (language.toLowerCase()) {
       case "javascript":
         return "javascript"
       case "python":
         return "python"
-      case "java":
-        return "java"
-      case "c++":
-        return "cpp"
-      default:
-        return "text"
-    }
-  }
-
-  if (!submission) {
-    return (
+        case "java":
+          return "java"
+          case "c++":
+            return "cpp"
+            default:
+              return "text"
+            }
+          }
+          
+          if (!user) return null 
+          if (!submission) {
+            return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Submission Not Found</h1>
-          <p className="text-gray-400 mb-4">The submission you're looking for doesn't exist.</p>
+          <p className="text-gray-400 mb-4">{"The submission you're looking for doesn't exist."}</p>
           <button
             onClick={() => router.back()}
             className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"

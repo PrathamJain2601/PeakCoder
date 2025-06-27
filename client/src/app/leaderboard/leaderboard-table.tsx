@@ -4,7 +4,7 @@ import { useFetchLeaderboard } from "@/mutations/leaderboardQuery"
 
 export default function LeaderboardTable() {
 
-  const {data: users, isPending, error} = useFetchLeaderboard();
+  const {data: users} = useFetchLeaderboard();
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -40,7 +40,7 @@ export default function LeaderboardTable() {
       .toUpperCase()
   }
 
-  const getAvatarColor = (username: string) => {
+  const getAvatarColor = () => {
     const colors = [
       "bg-red-500",
       "bg-blue-500",
@@ -95,7 +95,7 @@ export default function LeaderboardTable() {
                 {/* Avatar */}
                 <div className="col-span-1">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${getAvatarColor(user.username)}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${getAvatarColor()}`}
                   >
                     {getInitials(user.name)}
                   </div>
@@ -189,7 +189,7 @@ export default function LeaderboardTable() {
 
             <div className="flex items-center space-x-3">
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${getAvatarColor(user.username)}`}
+                className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${getAvatarColor()}`}
               >
                 {getInitials(user.name)}
               </div>

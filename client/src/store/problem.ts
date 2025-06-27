@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Problem, Submission, TestCase } from "@/types/problem"; 
-import { useDispatch } from "react-redux";
 import { logout } from "./user";
 
 type InitState = {

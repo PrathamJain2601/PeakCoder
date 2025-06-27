@@ -36,7 +36,7 @@ export const useFetchLeaderboard = () => {
             dispatch(setLeaderboard(data));
             toast.success("leaderboard loaded");
         }
-    }, [data, isLoading]);
+    }, [data, isLoading, dispatch]);
 
     useEffect(() => {
     if (error) {

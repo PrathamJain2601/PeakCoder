@@ -25,7 +25,7 @@ export default function CodeEditor() {
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [tempCode]);
+  }, [tempCode, dispatch]);
 
   const handleLanguageChange = (lang: string) => {
     setSelectedLanguage(Languages.find(l => l.name === lang) || Languages[0]);

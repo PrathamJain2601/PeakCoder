@@ -65,7 +65,7 @@ export default function Testimonials() {
             </span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Join thousands of satisfied coders who've elevated their skills with PeakCoder
+            {"Join thousands of satisfied coders who've elevated their skills with PeakCoder"}
           </p>
         </div>
 
@@ -87,7 +87,7 @@ export default function Testimonials() {
                 </div>
 
                 {/* Text */}
-                <p className="text-gray-300 leading-relaxed mb-6 italic">"{testimonial.text}"</p>
+                <p className="text-gray-300 leading-relaxed mb-6 italic">{`"`+testimonial.text+`"`}</p>
 
                 {/* User Info */}
                 <div className="flex items-center space-x-3">

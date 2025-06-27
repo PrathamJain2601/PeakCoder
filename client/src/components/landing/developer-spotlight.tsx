@@ -23,7 +23,7 @@ export default function DeveloperSpotlight() {
             </span>
           </h2>
           <p className="text-xl text-gray-400">
-            Hi, I'm Pratham Jain — I built PeakCoder to help coders like you grow faster.
+           {"Hi, I'm Pratham Jain — I built PeakCoder to help coders like you grow faster."}
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export default function DeveloperSpotlight() {
             {/* Right Side - Content */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-3xl font-bold text-white mb-2">👋 Hey! I'm Pratham Jain</h3>
+                <h3 className="text-3xl font-bold text-white mb-2">👋{"Hey! I'm Pratham Jain"}</h3>
                 <p className="text-blue-400 text-lg font-semibold">
                   B.Tech Student at IIIT Allahabad & Full-Stack Developer
                 </p>
@@ -65,8 +65,7 @@ export default function DeveloperSpotlight() {
 
               <div className="space-y-4 text-gray-300 leading-relaxed">
                 <p>
-                  I created PeakCoder because I've been in your shoes - practicing problems, grinding contests, and
-                  craving a better platform to track my growth and compete.
+                  {"I created PeakCoder because I've been in your shoes - practicing problems, grinding contests, and craving a better platform to track my growth and compete."}
                 </p>
                 <p>
                   PeakCoder is my vision for a faster, smarter, and more personalized way to grow as a competitive
@@ -81,7 +80,7 @@ export default function DeveloperSpotlight() {
               {/* Quote */}
               <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-l-4 border-blue-500 p-4 rounded-r-lg">
                 <p className="text-blue-300 italic text-lg">
-                  "Coding isn't just a skill, it's a sport - and PeakCoder is your arena."
+                  {`"Coding isn't just a skill, it's a sport - and PeakCoder is your arena."`}
                 </p>
               </div>
 

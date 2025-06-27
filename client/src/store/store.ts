@@ -18,23 +18,27 @@ import {
 // Dynamic import for localStorage (safe for Next.js)
 const createNoopStorage = () => {
   return {
-    getItem(_key: string) {
+    getItem() {
       return Promise.resolve(null);
     },
-    setItem(_key: string, value: any) {
+    setItem(_key: string, value: string) {
       return Promise.resolve(value);
     },
-    removeItem(_key: string) {
+    removeItem() {
       return Promise.resolve();
     },
+
   };
 };
 
-const storage =
-  typeof window !== "undefined"
-    ? require("redux-persist/lib/storage").default
-    : createNoopStorage();
-
+const createStorage = async () => {
+  if (typeof window !== "undefined") {
+    const storageModule = await import("redux-persist/lib/storage");
+    return storageModule.default;
+  } else {
+    return createNoopStorage();
+  }
+};
 const rootReducer = combineReducers({
   user: userReducer,
   problem: problemReducer,

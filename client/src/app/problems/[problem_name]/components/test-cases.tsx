@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Send } from "lucide-react"
 import { LoadedTestCase } from "../page"
 import RunButton from "./run-button"
 import { useSelector } from "react-redux"
@@ -9,12 +8,10 @@ import { RootState } from "@/store/store"
 import SubmitButton from "./submit-button"
 import { verdictToText } from "@/lib/utilityFunction"
 interface TestCasesProps {
-  onRun: () => void
-  onSubmit: () => void
   loadedTestCases: LoadedTestCase[]
 }
 
-export default function TestCases({onRun, onSubmit, loadedTestCases }: TestCasesProps) {
+export default function TestCases({ loadedTestCases }: TestCasesProps) {
   const [activeTab, setActiveTab] = useState<string>("")
   const run = useSelector((state: RootState) => state.code.run);
   const [verdict, setVerdict] = useState<string>("");
@@ -46,7 +43,6 @@ export default function TestCases({onRun, onSubmit, loadedTestCases }: TestCases
     }
   }, [loadedTestCases]);
 
-  const current = loadedTestCases.find((tc) => tc.id === activeTab)
   return (
     <div className="flex flex-col h-full bg-gray-800">
       <div className="flex border-b border-gray-700 px-4 py-2">

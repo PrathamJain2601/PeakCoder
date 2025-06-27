@@ -1,13 +1,6 @@
 "use client"
-import { Suspense, useEffect, useState } from "react"
+import { Suspense } from "react"
 import ProblemList from "./components/problem-list"
-import SearchBar from "./components/search-bar"
-import DifficultyFilter from "./components/difficulty-filter"
-import StatusFilter from "./components/status-filter"
-import TagsFilter from "./components/tags-filter"
-import { RootState } from "@/store/store"
-import { useSelector } from "react-redux"
-import { useRouter } from "next/navigation"
 
 function Page() {
 

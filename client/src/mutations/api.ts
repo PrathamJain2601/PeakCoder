@@ -1,5 +1,5 @@
 import { links } from "@/lib/links";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -10,17 +10,17 @@ const api = axios.create({
 
 type FailedRequest = {
   resolve: (token: string) => void;
-  reject: (err: any) => void;
+  reject: (err: AxiosError | Error) => void;
 };
 
 
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
 
-const processQueue = (error: any, token: string | null) => {
+const processQueue = (error: AxiosError | null | Error, token: string | null) => {
   failedQueue.forEach(prom => {
     if (error || token === null) {
-      prom.reject(error);
+      prom.reject(error ?? new Error("Unknown error during token refresh"));
     } else {
       prom.resolve(token);
     }
@@ -85,7 +85,7 @@ api.interceptors.response.use(
         processQueue(null, token);
         return api(originalRequest);
       } catch (err) {
-        processQueue(err, null);
+        processQueue(err as AxiosError | Error, null);
 
         window.location.href = "/auth";
         return Promise.reject(err);

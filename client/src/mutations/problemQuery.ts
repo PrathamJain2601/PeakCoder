@@ -23,7 +23,7 @@ export const useFetchProblem = (id?: string) => {
 
   const dispatch = useDispatch();
 
-  const { data: problem, isLoading, error } = query;
+  const { data: problem, error } = query;
 
   useEffect(() => {
     if (problem) {

@@ -22,10 +22,10 @@ const run = async (payload: runPayload) => {
     }
 }
 
-export const useRunMutation = (): UseMutationResult<any, Error, runPayload, unknown> => { 
+export const useRunMutation = () => { 
     return useMutation({
         mutationFn: run,
-        onSuccess: (data) => {
+        onSuccess: () => {
             toast.success("Code executed successfully");
         },
         onError: (error) => {

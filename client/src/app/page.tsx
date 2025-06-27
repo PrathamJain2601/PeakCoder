@@ -8,7 +8,6 @@ import Hero from "@/components/landing/hero";
 import HowItWorks from "@/components/landing/how-it-works";
 import LeaderboardPreview from "@/components/landing/leaderboard-preview";
 import Testimonials from "@/components/landing/testimonials";
-import Navbar from "@/components/navbar";
 
 export default function Home() {
   

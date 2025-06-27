@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -40,7 +40,7 @@ export const useFetchProblems = () => {
       toast.error("0 problems found");
     }
   }
-}, [data, isLoading]);
+}, [data, isLoading, dispatch]);
 
     useEffect(() => {
     if (error) {

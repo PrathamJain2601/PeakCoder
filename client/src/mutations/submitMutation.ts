@@ -23,10 +23,10 @@ const submit = async (payload: runPayload) => {
     }
 }
 
-export const useSubmitMutation = (): UseMutationResult<any, Error, runPayload, unknown> => { 
+export const useSubmitMutation = () => { 
     return useMutation({
         mutationFn: submit,
-        onSuccess: (data) => {
+        onSuccess: () => {
             toast.success("Code executed successfully");
         },
         onError: (error) => {

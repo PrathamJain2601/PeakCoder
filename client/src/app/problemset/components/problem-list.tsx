@@ -1,25 +1,22 @@
 "use client"
 
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState} from "react"
 import type { Problem, Difficulty } from "@/types/problem"
 import ProblemRow from "./problem-row"
 import { useFetchProblems } from "@/mutations/problemsQuery"
-import { useRouter } from "next/router"
-import { useSelector } from "react-redux"
-import { RootState } from "@/store/store"
 
 const ProblemList: React.FC = () => {
    
-  const [searchTerm, setSearchTerm] = useState("")
-  const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "All">("All")
+  // const [searchTerm, setSearchTerm] = useState("")
+  // const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "All">("All")
 
-  let { data: problems = [], isLoading, error } = useFetchProblems();
+  const { data: problems = [], isLoading } = useFetchProblems();
 
   const filteredProblems = () => {
     return problems.filter((problem: Problem) => {
-      const matchesSearch = problem.title.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesDifficulty = difficultyFilter === "All" || problem.difficulty === difficultyFilter
-      return matchesSearch && matchesDifficulty
+      // const matchesSearch = problem.title.toLowerCase().includes(searchTerm.toLowerCase())
+      // const matchesDifficulty = difficultyFilter === "All" || problem.difficulty === difficultyFilter
+      // return matchesSearch && matchesDifficulty
     })
   }
 

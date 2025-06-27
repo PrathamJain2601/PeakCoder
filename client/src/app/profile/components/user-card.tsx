@@ -1,6 +1,6 @@
 import { formatDateReadable } from "@/lib/utilityFunction"
 import { RootState } from "@/store/store"
-import { Edit, Calendar, Mail, Shield } from "lucide-react"
+import { Calendar, Mail } from "lucide-react"
 import { useSelector } from "react-redux"
 
 interface UserData {
@@ -10,15 +10,6 @@ interface UserData {
   role: "Admin" | "User" | "Moderator"
   joinedDate: string
   avatar: string
-}
-
-const mockUser: UserData = {
-  name: "Alex Johnson",
-  username: "@alexcoder",
-  email: "alex.johnson@peakcoder.com",
-  role: "Admin",
-  joinedDate: "March 12, 2024",
-  avatar: "/placeholder.svg?height=80&width=80",
 }
 
 export default function UserCard() {

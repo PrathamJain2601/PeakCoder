@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Play } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { useRouter } from "next/navigation";
 
 export default function CallToAction() {

@@ -36,7 +36,7 @@ export const useFetchStatistics = () => {
             dispatch(setStatistics(data));
             toast.success("statistics loaded");
         }
-    }, [data, isLoading]);
+    }, [data, isLoading, dispatch]);
 
     useEffect(() => {
     if (error) {

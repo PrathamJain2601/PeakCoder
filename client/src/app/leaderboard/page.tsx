@@ -1,10 +1,6 @@
 "use client"
 import Navbar from "@/components/navbar"
 import LeaderboardTable from "./leaderboard-table"
-import { useRouter } from "next/navigation"
-import { useSelector } from "react-redux"
-import { RootState } from "@/store/store"
-import { useEffect } from "react"
 
 export default function LeaderboardPage() {
   return (

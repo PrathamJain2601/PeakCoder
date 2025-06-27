@@ -10,7 +10,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import { useFetchProblem } from "@/mutations/problemQuery"
 import { useFetchTestcase } from "@/mutations/testcaseQuery"
 import { useDispatch, useSelector } from "react-redux"
@@ -84,7 +84,7 @@ function Page() {
     if (problem?.id) {
       fetchTestcases(problem.id);
     }
-  }, [problem?.id]);
+  }, [problem?.id, fetchTestcases]);
 
   useEffect(()=>{
     console.log("Loaded Test Cases:", loadedTestCases)
@@ -93,14 +93,6 @@ function Page() {
   if (isLoading) return <div>Loading problem...</div>
   if (error) return <div>Error: {(error as Error).message}</div>
   if (!problem) return <div>No problem found</div>
-
-  const handleRunCode = () => {
-    console.log("Running code with:")
-  }
-
-  const handleSubmitCode = () => {
-    console.log("Submitting code with:")
-  }
 
   return (
     <div className="bg-gray-900 h-screen">
@@ -143,7 +135,7 @@ function Page() {
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={35}>
-              <TestCases loadedTestCases={loadedTestCases} onRun={handleRunCode} onSubmit={handleSubmitCode} />
+              <TestCases loadedTestCases={loadedTestCases} />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
