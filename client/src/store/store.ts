@@ -14,30 +14,7 @@ import {
   REGISTER,
 } from "redux-persist";
 
-const createNoopStorage = () => {
-  return {
-    getItem() {
-      return Promise.resolve(null);
-    },
-    setItem(_key: string, value: string) {
-      return Promise.resolve(value);
-    },
-    removeItem() {
-      return Promise.resolve();
-    },
-  };
-};
-
-// Async storage init
-let storage: any;
-
-if (typeof window !== "undefined") {
-  // Dynamic import so no require()
-  const storageModule = await import("redux-persist/lib/storage");
-  storage = storageModule.default;
-} else {
-  storage = createNoopStorage();
-}
+import storage from "redux-persist/lib/storage"; // no SSR fallback needed
 
 const rootReducer = combineReducers({
   user: userReducer,
