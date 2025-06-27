@@ -15,6 +15,7 @@ const ProblemList: React.FC = () => {
   const filteredProblems = () => {
     return problems.filter((problem: Problem) => {
       console.log(problem)
+      return true;
       // const matchesSearch = problem.title.toLowerCase().includes(searchTerm.toLowerCase())
       // const matchesDifficulty = difficultyFilter === "All" || problem.difficulty === difficultyFilter
       // return matchesSearch && matchesDifficulty
