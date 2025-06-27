@@ -13,9 +13,9 @@ import { isAuthorized } from "../middlewares/auth.middleware";
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 const router = Router();
-router.post("/:id",isAuthorized, getSingleProblem);
+router.get("/:id",isAuthorized, getSingleProblem);
 router.get("/:id/testcases", getSampleTestcases);
-router.post("/",isAuthorized, getProblems);
+router.get("/",isAuthorized, getProblems);
 router.post("/", isAuthorized, createProblem);
 // router.put("/:id", updateProblem);
 router.delete("/:id", isAuthorized, deleteProblem);
