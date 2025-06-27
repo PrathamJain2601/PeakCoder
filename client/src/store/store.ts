@@ -1,4 +1,3 @@
-// store.ts
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./user";
 import problemReducer from "./problem";
@@ -15,7 +14,7 @@ import {
   REGISTER,
 } from "redux-persist";
 
-// Dynamic import for localStorage (safe for Next.js)
+// Safe for SSR
 const createNoopStorage = () => {
   return {
     getItem() {
@@ -27,18 +26,17 @@ const createNoopStorage = () => {
     removeItem() {
       return Promise.resolve();
     },
-
   };
 };
 
-const createStorage = async () => {
-  if (typeof window !== "undefined") {
-    const storageModule = await import("redux-persist/lib/storage");
-    return storageModule.default;
-  } else {
-    return createNoopStorage();
-  }
-};
+let storage: typeof import("redux-persist/lib/storage").default | ReturnType<typeof createNoopStorage>;
+
+if (typeof window !== "undefined") {
+  storage = require("redux-persist/lib/storage").default;
+} else {
+  storage = createNoopStorage();
+}
+
 const rootReducer = combineReducers({
   user: userReducer,
   problem: problemReducer,

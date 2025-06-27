@@ -3,14 +3,6 @@ import { RootState } from "@/store/store"
 import { Calendar, Mail } from "lucide-react"
 import { useSelector } from "react-redux"
 
-interface UserData {
-  name: string
-  username: string
-  email: string
-  role: "Admin" | "User" | "Moderator"
-  joinedDate: string
-  avatar: string
-}
 
 export default function UserCard() {
   const user = useSelector((state: RootState) => state.user.user);

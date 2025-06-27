@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState} from "react"
-import type { Problem, Difficulty } from "@/types/problem"
+import React from "react"
+import type { Problem } from "@/types/problem"
 import ProblemRow from "./problem-row"
 import { useFetchProblems } from "@/mutations/problemsQuery"
 
@@ -14,6 +14,7 @@ const ProblemList: React.FC = () => {
 
   const filteredProblems = () => {
     return problems.filter((problem: Problem) => {
+      console.log(problem)
       // const matchesSearch = problem.title.toLowerCase().includes(searchTerm.toLowerCase())
       // const matchesDifficulty = difficultyFilter === "All" || problem.difficulty === difficultyFilter
       // return matchesSearch && matchesDifficulty

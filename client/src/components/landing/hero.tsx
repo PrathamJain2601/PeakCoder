@@ -105,7 +105,7 @@ export default function Hero() {
                       <div className="text-gray-400 ml-4">
                         for (let i = 0; i {"<"} nums.length; i++) {"{"}
                       </div>
-                      <div className="text-green-400 ml-8">// Solution logic here</div>
+                      <div className="text-green-400 ml-8">{"// Solution logic here"}</div>
                       <div className="text-gray-400 ml-4">{"}"}</div>
                       <div className="text-purple-400">{"}"}</div>
                     </div>
