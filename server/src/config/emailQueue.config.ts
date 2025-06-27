@@ -12,7 +12,7 @@ const sendEmail = async (emailData: emailData) => {
         from: "Auth <Auth@gmail.com>",
         to: emailData.to,
         subject: emailData.subject,
-        text: `Hello ${emailData.name}, Please verify your email using this link: http://localhost:5000/verify-email?token=${emailData.code}`,
+        text: `Hello ${emailData.name}, Please verify your email using this link: ${process.env.BACKEND_URL}/verify-email?token=${emailData.code}`,
         html: emailTemplates.verificationEmail(emailData.code, emailData.name),
     });
 
