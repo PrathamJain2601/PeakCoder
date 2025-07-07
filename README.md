@@ -1,8 +1,3 @@
-Here’s a complete, clean, and professional `README.md` for **PeakCoder**, based on the screenshots you uploaded:
-
----
-
-````markdown
 # 🏔️ PeakCoder
 
 **Elevate Coding Skills Through Real-Time Innovation**
@@ -63,7 +58,7 @@ Build **PeakCoder** from source and install dependencies.
 
    ```bash
    git clone https://github.com/PrathamJain2601/PeakCoder
-````
+    ```
 
 2. **Navigate to the project directory**:
 
@@ -139,13 +134,4 @@ Pull requests are welcome! If you’d like to contribute, please fork the repo a
 
 Built with ❤️ by [Pratham Jain](https://github.com/PrathamJain2601)
 
-```
-
----
-
-Let me know if you want to:
-- Add shields for coverage, license, stars, etc.
-- Auto-fill the `{test_framework}` and `INSERT-TEST-COMMAND-HERE` placeholders.
-- Write a `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` as well.
-- Publish this project on Product Hunt or GitHub Discussions.
 ```
