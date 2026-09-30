@@ -35,7 +35,7 @@ export default function DeveloperSpotlight() {
               <div className="relative z-10">
                 {/* Profile Image Placeholder */}
                 <div className="w-80 h-80 mx-auto bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-6xl font-bold shadow-2xl">
-                  PJ
+                  MJ
                 </div>
 
                 {/* Floating Tech Icons */}
@@ -57,7 +57,7 @@ export default function DeveloperSpotlight() {
             {/* Right Side - Content */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-3xl font-bold text-white mb-2">👋{"Hey! I'm Pratham Jain"}</h3>
+                <h3 className="text-3xl font-bold text-white mb-2">👋{"Hey! I'm Mokshe Jain"}</h3>
                 <p className="text-blue-400 text-lg font-semibold">
                   B.Tech Student at IIIT Allahabad & Full-Stack Developer
                 </p>
@@ -100,7 +100,7 @@ export default function DeveloperSpotlight() {
               <div className="flex space-x-4">
                 <a
                   target="_blank"
-                  href="https://github.com/PrathamJain2601/PeakCoder"
+                  {/* href="https://github.com/PrathamJain2601/PeakCoder" */}
                   className="group flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
                 >
                   <Github size={20} className="text-gray-400 group-hover:text-white" />
@@ -108,7 +108,7 @@ export default function DeveloperSpotlight() {
                 </a>
                 <a
                   target="_blank"
-                  href="https://www.linkedin.com/in/pratham-jain-a8b01b2a3/"
+                  {/* href="https://www.linkedin.com/in/pratham-jain-a8b01b2a3/" */}
                   className="group flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
                 >
                   <Linkedin size={20} className="text-gray-400 group-hover:text-white" />
@@ -116,7 +116,7 @@ export default function DeveloperSpotlight() {
                 </a>
                 <a
                   target="_blank"
-                  href="https://portfolio-az2g-628hd2q87-pratham-jains-projects-51c9e783.vercel.app/"
+                  {/* href="https://portfolio-az2g-628hd2q87-pratham-jains-projects-51c9e783.vercel.app/" */}
                   className="group flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
                 >
                   <ExternalLink size={20} className="text-gray-400 group-hover:text-white" />
