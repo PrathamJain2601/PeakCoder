@@ -100,7 +100,7 @@ export default function DeveloperSpotlight() {
               <div className="flex space-x-4">
                 <a
                   target="_blank"
-                  {/* href="https://github.com/PrathamJain2601/PeakCoder" */}
+                  href="https://github.com/PrathamJain2601/PeakCoder"
                   className="group flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
                 >
                   <Github size={20} className="text-gray-400 group-hover:text-white" />
@@ -108,7 +108,7 @@ export default function DeveloperSpotlight() {
                 </a>
                 <a
                   target="_blank"
-                  {/* href="https://www.linkedin.com/in/pratham-jain-a8b01b2a3/" */}
+                  href="https://www.linkedin.com/in/pratham-jain-a8b01b2a3/" 
                   className="group flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
                 >
                   <Linkedin size={20} className="text-gray-400 group-hover:text-white" />
@@ -116,7 +116,7 @@ export default function DeveloperSpotlight() {
                 </a>
                 <a
                   target="_blank"
-                  {/* href="https://portfolio-az2g-628hd2q87-pratham-jains-projects-51c9e783.vercel.app/" */}
+                  href="https://portfolio-az2g-628hd2q87-pratham-jains-projects-51c9e783.vercel.app/" 
                   className="group flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
                 >
                   <ExternalLink size={20} className="text-gray-400 group-hover:text-white" />
